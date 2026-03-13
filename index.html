@@ -253,7 +253,6 @@
 
       <div class="content">
         <div class="spacer-top"></div>
-
         <div class="genres" id="genres"></div>
 
         <div class="bottom">
@@ -274,37 +273,28 @@
   <script>
     const APP_NAME = "RESONANCE";
 
+    /*
+      КАК ДОБАВЛЯТЬ ФАЙЛЫ:
+      Просто клади mp3 рядом с index.html по шаблону:
+      lofi-1.mp3 ... lofi-100.mp3
+      rap-1.mp3  ... rap-100.mp3
+      jazz-1.mp3 ... jazz-100.mp3
+      chill-1.mp3 ... chill-100.mp3
+
+      Код переписывать не нужно.
+      Плеер сам попробует найти файлы от 1 до 100.
+      Если найдено, например, только lofi-1 ... lofi-5,
+      после lofi-5 снова включится lofi-1.
+    */
+
     const GENRES = [
-      {
-        id: "lofi",
-        name: "Lo-Fi",
-        mode: "local-list",
-        tracks: ["./lofi-1.mp3", "./lofi-2.mp3"]
-      },
-      {
-        id: "rap",
-        name: "Rap",
-        mode: "local-list",
-        tracks: ["./rap-1.mp3", "./rap-2.mp3"]
-      },
-      {
-        id: "jazz",
-        name: "Jazz",
-        mode: "stream",
-        urls: [
-          "https://knkx-live-a.edge.audiocdn.com/6285_128k",
-          "https://knkx-live-a.edge.audiocdn.com/6285_64k"
-        ]
-      },
-      {
-        id: "chill",
-        name: "Chill",
-        mode: "stream",
-        urls: [
-          "https://ice5.somafm.com/dronezone-128-mp3",
-          "https://ice3.somafm.com/dronezone-128-mp3"
-        ]
-      }
+      { id: "lofi",  name: "Lo-Fi",  mode: "local-list", prefix: "lofi",  maxFiles: 100 },
+      { id: "rap",   name: "Rap",    mode: "local-list", prefix: "rap",   maxFiles: 100 },
+      { id: "jazz",  name: "Jazz",   mode: "local-list", prefix: "jazz",  maxFiles: 100 },
+      { id: "chill", name: "Chill",  mode: "stream", urls: [
+        "https://ice5.somafm.com/dronezone-128-mp3",
+        "https://ice3.somafm.com/dronezone-128-mp3"
+      ]}
     ];
 
     const audio = document.getElementById("audio");
@@ -327,6 +317,7 @@
     let fakeEnergy = 0.05;
     let rightGlowLevel = 0;
 
+    const localTrackCache = {};
     const stars = Array.from({ length: 18 }, () => ({
       x: 0.86 + Math.random() * 0.12,
       y: Math.random(),
@@ -365,7 +356,7 @@
 
       if ("serviceWorker" in navigator && location.protocol !== "file:") {
         const swCode = `
-          const CACHE = 'resonance-black-v3';
+          const CACHE = 'resonance-scalable-v1';
           self.addEventListener('install', (e) => {
             self.skipWaiting();
             e.waitUntil(caches.open(CACHE).then(cache => cache.addAll(['./']).catch(()=>{})));
@@ -451,13 +442,58 @@
       }catch(e){}
     }
 
+    async function fileExists(url){
+      if (location.protocol === "file:") {
+        return true;
+      }
+
+      try{
+        const head = await fetch(url, { method: "HEAD", cache: "no-store" });
+        if (head.ok) return true;
+      }catch(e){}
+
+      try{
+        const range = await fetch(url, {
+          method: "GET",
+          headers: { Range: "bytes=0-0" },
+          cache: "no-store"
+        });
+        return range.ok || range.status === 206;
+      }catch(e){
+        return false;
+      }
+    }
+
+    async function getLocalTracksForGenre(genre){
+      if (localTrackCache[genre.id]) return localTrackCache[genre.id];
+
+      const tracks = [];
+
+      for (let i = 1; i <= genre.maxFiles; i++){
+        const url = `./${genre.prefix}-${i}.mp3`;
+        const exists = await fileExists(url);
+        if (exists) {
+          tracks.push(url);
+        } else if (location.protocol !== "file:") {
+          // в режиме сервера можно остановиться на первом пропуске
+          break;
+        }
+      }
+
+      localTrackCache[genre.id] = tracks;
+      return tracks;
+    }
+
     async function selectGenre(genre){
       currentGenre = genre;
       setActiveGenre(genre.id);
 
       if (genre.mode === "local-list") {
+        const tracks = await getLocalTracksForGenre(genre);
+        if (!tracks.length) return;
+
         currentLocalIndex = 0;
-        audio.src = genre.tracks[currentLocalIndex];
+        audio.src = tracks[currentLocalIndex];
         audio.load();
         await safePlay();
         updateMediaSession();
@@ -473,8 +509,12 @@
 
     async function nextLocal(){
       if (!currentGenre || currentGenre.mode !== "local-list") return;
-      currentLocalIndex = (currentLocalIndex + 1) % currentGenre.tracks.length;
-      audio.src = currentGenre.tracks[currentLocalIndex];
+
+      const tracks = await getLocalTracksForGenre(currentGenre);
+      if (!tracks.length) return;
+
+      currentLocalIndex = (currentLocalIndex + 1) % tracks.length;
+      audio.src = tracks[currentLocalIndex];
       audio.load();
       await safePlay();
       updateMediaSession();
@@ -513,11 +553,17 @@
     });
 
     audio.addEventListener("ended", async () => {
-      if (currentGenre?.mode === "local-list") await nextLocal();
+      if (currentGenre?.mode === "local-list") {
+        await nextLocal();
+      }
     });
 
     audio.addEventListener("error", async () => {
-      if (currentGenre?.mode === "stream") await retryStream();
+      if (currentGenre?.mode === "local-list") {
+        await nextLocal();
+      } else if (currentGenre?.mode === "stream") {
+        await retryStream();
+      }
     });
 
     function createArtworkDataURL(text){
@@ -596,12 +642,15 @@
       const activeId = currentGenre?.id || "lofi";
       const lofiActive = activeId === "lofi";
       const rapActive = activeId === "rap";
+      const jazzActive = activeId === "jazz";
 
       let targetGlow;
       if (lofiActive) {
         targetGlow = 0.20 + e * 0.85 + (Math.sin(t * 5.2) * 0.08 + 0.08);
       } else if (rapActive) {
         targetGlow = 0.18 + e * 0.65 + (Math.sin(t * 4.4) * 0.05 + 0.05);
+      } else if (jazzActive) {
+        targetGlow = 0.19 + e * 0.58 + (Math.sin(t * 3.6) * 0.045 + 0.05);
       } else {
         targetGlow = 0.015 + e * 0.06;
       }
@@ -622,10 +671,15 @@
         bandGlow.addColorStop(0.45, `rgba(130,130,130,${rightGlowLevel * 0.20})`);
         bandGlow.addColorStop(0.75, `rgba(170,170,170,${rightGlowLevel * 0.55})`);
         bandGlow.addColorStop(1, `rgba(235,235,235,${Math.min(1, rightGlowLevel * 0.95)})`);
+      } else if (jazzActive) {
+        bandGlow.addColorStop(0, "rgba(255,180,110,0)");
+        bandGlow.addColorStop(0.40, `rgba(255,148,92,${rightGlowLevel * 0.18})`);
+        bandGlow.addColorStop(0.72, `rgba(255,110,150,${rightGlowLevel * 0.45})`);
+        bandGlow.addColorStop(1, `rgba(255,190,95,${Math.min(1, rightGlowLevel * 0.95)})`);
       } else {
         bandGlow.addColorStop(0, "rgba(255,255,255,0)");
         bandGlow.addColorStop(0.65, `rgba(120,120,120,${rightGlowLevel * 0.12})`);
-        bandGlow.addColorStop(1, `rgba(180,180,180,${rightGlowLevel * 0.25})`);
+        bandGlow.addColorStop(1, `rgba(180,180,180,${rightGlowLevel * 0.25)})`);
       }
 
       ctx.fillStyle = bandGlow;
@@ -640,6 +694,10 @@
         centerGlow.addColorStop(0, `rgba(245,245,245,${rightGlowLevel * 0.40})`);
         centerGlow.addColorStop(.25, `rgba(150,150,150,${rightGlowLevel * 0.24})`);
         centerGlow.addColorStop(1, "rgba(150,150,150,0)");
+      } else if (jazzActive) {
+        centerGlow.addColorStop(0, `rgba(255,205,120,${rightGlowLevel * 0.44})`);
+        centerGlow.addColorStop(.25, `rgba(255,115,145,${rightGlowLevel * 0.24})`);
+        centerGlow.addColorStop(1, "rgba(255,115,145,0)");
       } else {
         centerGlow.addColorStop(0, `rgba(215,215,215,${rightGlowLevel * 0.14})`);
         centerGlow.addColorStop(1, "rgba(150,150,150,0)");
@@ -651,6 +709,9 @@
       if (rapActive) {
         bottomGlow.addColorStop(0, `rgba(200,200,200,${0.02 + e * .12})`);
         bottomGlow.addColorStop(1, "rgba(200,200,200,0)");
+      } else if (jazzActive) {
+        bottomGlow.addColorStop(0, `rgba(255,150,120,${0.02 + e * .13})`);
+        bottomGlow.addColorStop(1, "rgba(255,150,120,0)");
       } else {
         bottomGlow.addColorStop(0, `rgba(118,188,255,${0.03 + e * .18})`);
         bottomGlow.addColorStop(1, "rgba(118,188,255,0)");
@@ -660,26 +721,30 @@
 
       for (const s of stars){
         ctx.beginPath();
-        const starAlphaBase = rapActive ? 0.65 : 0.45;
+        const starAlphaBase = rapActive ? 0.65 : jazzActive ? 0.58 : 0.45;
         ctx.fillStyle = `rgba(255,255,255,${s.a * (starAlphaBase + rightGlowLevel * 0.5)})`;
         ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      if (lofiActive || rapActive){
+      if (lofiActive || rapActive || jazzActive){
         const x = w * 0.962;
         const y = h * 0.51;
-        const pulse = 18 + e * 34 + Math.sin(t * (rapActive ? 5.1 : 6.4)) * 4;
+        const pulse = 18 + e * 34 + Math.sin(t * (jazzActive ? 4.7 : rapActive ? 5.1 : 6.4)) * 4;
 
         const dotGlow = ctx.createRadialGradient(x, y, 0, x, y, pulse);
         if (lofiActive) {
           dotGlow.addColorStop(0, `rgba(180,232,255,${rightGlowLevel * 0.95})`);
           dotGlow.addColorStop(.38, `rgba(53,184,255,${rightGlowLevel * 0.38})`);
           dotGlow.addColorStop(1, "rgba(53,184,255,0)");
-        } else {
+        } else if (rapActive) {
           dotGlow.addColorStop(0, `rgba(245,245,245,${rightGlowLevel * 0.75})`);
           dotGlow.addColorStop(.38, `rgba(160,160,160,${rightGlowLevel * 0.30})`);
           dotGlow.addColorStop(1, "rgba(160,160,160,0)");
+        } else {
+          dotGlow.addColorStop(0, `rgba(255,210,135,${rightGlowLevel * 0.78})`);
+          dotGlow.addColorStop(.38, `rgba(255,120,145,${rightGlowLevel * 0.28})`);
+          dotGlow.addColorStop(1, "rgba(255,120,145,0)");
         }
         ctx.fillStyle = dotGlow;
         ctx.beginPath();
