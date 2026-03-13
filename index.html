@@ -284,11 +284,8 @@
       {
         id: "rap",
         name: "Rap",
-        mode: "stream",
-        urls: [
-          "https://strm112.1.fm/rap_mobile_mp3",
-          "https://strm112.1.fm/atr_mobile_mp3"
-        ]
+        mode: "local-list",
+        tracks: ["./rap-1.mp3", "./rap-2.mp3"]
       },
       {
         id: "jazz",
@@ -368,7 +365,7 @@
 
       if ("serviceWorker" in navigator && location.protocol !== "file:") {
         const swCode = `
-          const CACHE = 'resonance-black-v2';
+          const CACHE = 'resonance-black-v3';
           self.addEventListener('install', (e) => {
             self.skipWaiting();
             e.waitUntil(caches.open(CACHE).then(cache => cache.addAll(['./']).catch(()=>{})));
@@ -596,11 +593,18 @@
       ctx.clearRect(0, 0, w, h);
 
       const e = getEnergy();
-      const lofiActive = currentGenre?.id === "lofi";
+      const activeId = currentGenre?.id || "lofi";
+      const lofiActive = activeId === "lofi";
+      const rapActive = activeId === "rap";
 
-      const targetGlow = lofiActive
-        ? 0.20 + e * 0.85 + (Math.sin(t * 5.2) * 0.08 + 0.08)
-        : 0.015 + e * 0.06;
+      let targetGlow;
+      if (lofiActive) {
+        targetGlow = 0.20 + e * 0.85 + (Math.sin(t * 5.2) * 0.08 + 0.08);
+      } else if (rapActive) {
+        targetGlow = 0.18 + e * 0.65 + (Math.sin(t * 4.4) * 0.05 + 0.05);
+      } else {
+        targetGlow = 0.015 + e * 0.06;
+      }
 
       rightGlowLevel += (targetGlow - rightGlowLevel) * 0.08;
 
@@ -608,43 +612,75 @@
       const bandWidth = Math.max(18, w * 0.022);
 
       const bandGlow = ctx.createLinearGradient(bandX - bandWidth * 4, 0, bandX, 0);
-      bandGlow.addColorStop(0, 'rgba(53,184,255,0)');
-      bandGlow.addColorStop(0.55, `rgba(53,184,255,${rightGlowLevel * 0.22})`);
-      bandGlow.addColorStop(0.82, `rgba(53,184,255,${rightGlowLevel * 0.75})`);
-      bandGlow.addColorStop(1, `rgba(160,225,255,${Math.min(1, rightGlowLevel * 1.15)})`);
+      if (lofiActive) {
+        bandGlow.addColorStop(0, "rgba(53,184,255,0)");
+        bandGlow.addColorStop(0.55, `rgba(53,184,255,${rightGlowLevel * 0.22})`);
+        bandGlow.addColorStop(0.82, `rgba(53,184,255,${rightGlowLevel * 0.75})`);
+        bandGlow.addColorStop(1, `rgba(160,225,255,${Math.min(1, rightGlowLevel * 1.15)})`);
+      } else if (rapActive) {
+        bandGlow.addColorStop(0, "rgba(255,255,255,0)");
+        bandGlow.addColorStop(0.45, `rgba(130,130,130,${rightGlowLevel * 0.20})`);
+        bandGlow.addColorStop(0.75, `rgba(170,170,170,${rightGlowLevel * 0.55})`);
+        bandGlow.addColorStop(1, `rgba(235,235,235,${Math.min(1, rightGlowLevel * 0.95)})`);
+      } else {
+        bandGlow.addColorStop(0, "rgba(255,255,255,0)");
+        bandGlow.addColorStop(0.65, `rgba(120,120,120,${rightGlowLevel * 0.12})`);
+        bandGlow.addColorStop(1, `rgba(180,180,180,${rightGlowLevel * 0.25})`);
+      }
 
       ctx.fillStyle = bandGlow;
       ctx.fillRect(w - bandWidth * 6, 0, bandWidth * 6, h);
 
       const centerGlow = ctx.createRadialGradient(w * 0.985, h * 0.5, 0, w * 0.985, h * 0.5, Math.min(w, h) * 0.23);
-      centerGlow.addColorStop(0, `rgba(160,225,255,${rightGlowLevel * 0.55})`);
-      centerGlow.addColorStop(.25, `rgba(53,184,255,${rightGlowLevel * 0.28})`);
-      centerGlow.addColorStop(1, 'rgba(53,184,255,0)');
+      if (lofiActive) {
+        centerGlow.addColorStop(0, `rgba(160,225,255,${rightGlowLevel * 0.55})`);
+        centerGlow.addColorStop(.25, `rgba(53,184,255,${rightGlowLevel * 0.28})`);
+        centerGlow.addColorStop(1, "rgba(53,184,255,0)");
+      } else if (rapActive) {
+        centerGlow.addColorStop(0, `rgba(245,245,245,${rightGlowLevel * 0.40})`);
+        centerGlow.addColorStop(.25, `rgba(150,150,150,${rightGlowLevel * 0.24})`);
+        centerGlow.addColorStop(1, "rgba(150,150,150,0)");
+      } else {
+        centerGlow.addColorStop(0, `rgba(215,215,215,${rightGlowLevel * 0.14})`);
+        centerGlow.addColorStop(1, "rgba(150,150,150,0)");
+      }
       ctx.fillStyle = centerGlow;
       ctx.fillRect(w - Math.min(w, h) * 0.28, h * 0.18, Math.min(w, h) * 0.28, h * 0.64);
 
       const bottomGlow = ctx.createRadialGradient(w * .5, h * .88, 0, w * .5, h * .88, Math.min(w, h) * .22);
-      bottomGlow.addColorStop(0, `rgba(118,188,255,${0.03 + e * .18})`);
-      bottomGlow.addColorStop(1, 'rgba(118,188,255,0)');
+      if (rapActive) {
+        bottomGlow.addColorStop(0, `rgba(200,200,200,${0.02 + e * .12})`);
+        bottomGlow.addColorStop(1, "rgba(200,200,200,0)");
+      } else {
+        bottomGlow.addColorStop(0, `rgba(118,188,255,${0.03 + e * .18})`);
+        bottomGlow.addColorStop(1, "rgba(118,188,255,0)");
+      }
       ctx.fillStyle = bottomGlow;
       ctx.fillRect(0, 0, w, h);
 
       for (const s of stars){
         ctx.beginPath();
-        ctx.fillStyle = `rgba(255,255,255,${s.a * (.45 + rightGlowLevel * 0.5)})`;
+        const starAlphaBase = rapActive ? 0.65 : 0.45;
+        ctx.fillStyle = `rgba(255,255,255,${s.a * (starAlphaBase + rightGlowLevel * 0.5)})`;
         ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      if (lofiActive){
+      if (lofiActive || rapActive){
         const x = w * 0.962;
         const y = h * 0.51;
-        const pulse = 18 + e * 34 + Math.sin(t * 6.4) * 4;
+        const pulse = 18 + e * 34 + Math.sin(t * (rapActive ? 5.1 : 6.4)) * 4;
 
         const dotGlow = ctx.createRadialGradient(x, y, 0, x, y, pulse);
-        dotGlow.addColorStop(0, `rgba(180,232,255,${rightGlowLevel * 0.95})`);
-        dotGlow.addColorStop(.38, `rgba(53,184,255,${rightGlowLevel * 0.38})`);
-        dotGlow.addColorStop(1, 'rgba(53,184,255,0)');
+        if (lofiActive) {
+          dotGlow.addColorStop(0, `rgba(180,232,255,${rightGlowLevel * 0.95})`);
+          dotGlow.addColorStop(.38, `rgba(53,184,255,${rightGlowLevel * 0.38})`);
+          dotGlow.addColorStop(1, "rgba(53,184,255,0)");
+        } else {
+          dotGlow.addColorStop(0, `rgba(245,245,245,${rightGlowLevel * 0.75})`);
+          dotGlow.addColorStop(.38, `rgba(160,160,160,${rightGlowLevel * 0.30})`);
+          dotGlow.addColorStop(1, "rgba(160,160,160,0)");
+        }
         ctx.fillStyle = dotGlow;
         ctx.beginPath();
         ctx.arc(x, y, pulse, 0, Math.PI * 2);
