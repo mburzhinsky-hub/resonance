@@ -14,7 +14,6 @@
       --bg:#000000;
       --text:#ffffff;
       --muted:rgba(255,255,255,.24);
-      --muted-soft:rgba(255,255,255,.12);
       --accent:#35b8ff;
       --safe-top:max(14px, env(safe-area-inset-top));
       --safe-bottom:max(18px, env(safe-area-inset-bottom));
@@ -42,23 +41,6 @@
       background:#000;
     }
 
-    body::before{
-      content:"";
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      z-index:0;
-      background:
-        radial-gradient(circle at 82% 50%, rgba(53,184,255,.12), transparent 16%),
-        radial-gradient(circle at 84% 50%, rgba(53,184,255,.05), transparent 28%);
-      opacity:0;
-      transition:opacity .45s ease;
-    }
-
-    body.glow-lofi::before{
-      opacity:1;
-    }
-
     #bgCanvas{
       position:fixed;
       inset:0;
@@ -66,7 +48,6 @@
       height:100%;
       display:block;
       z-index:0;
-      opacity:.9;
     }
 
     .app{
@@ -91,6 +72,7 @@
       display:flex;
       flex-direction:column;
       background:#000;
+      overflow:hidden;
     }
 
     .top{
@@ -110,7 +92,7 @@
     }
 
     .logo.playing{
-      animation:logoPulse 2.6s ease-in-out infinite;
+      animation:logoPulse 2.2s ease-in-out infinite;
     }
 
     .content{
@@ -118,6 +100,7 @@
       display:flex;
       flex-direction:column;
       min-height:0;
+      position:relative;
     }
 
     .spacer-top{
@@ -132,6 +115,8 @@
       align-items:flex-start;
       padding-left:2px;
       margin-top:8px;
+      position:relative;
+      z-index:2;
     }
 
     .genre{
@@ -191,6 +176,8 @@
       gap:22px;
       padding-bottom:2px;
       flex:1;
+      position:relative;
+      z-index:2;
     }
 
     .pause-btn{
@@ -250,8 +237,6 @@
 
     @media (min-width:431px){
       .phone{
-        border-left:1px solid rgba(255,255,255,.03);
-        border-right:1px solid rgba(255,255,255,.03);
         box-shadow:0 0 60px rgba(0,0,0,.35);
       }
     }
@@ -343,19 +328,20 @@
     let sourceNode = null;
     let usingRealAnalyser = false;
     let fakeEnergy = 0.05;
+    let rightGlowLevel = 0;
 
-    const stars = Array.from({ length: 28 }, () => ({
-      x: Math.random(),
+    const stars = Array.from({ length: 18 }, () => ({
+      x: 0.86 + Math.random() * 0.12,
       y: Math.random(),
-      r: Math.random() * 1.6 + 0.3,
-      a: Math.random() * .35 + .06
+      r: Math.random() * 1.4 + 0.4,
+      a: Math.random() * .25 + .08
     }));
 
     function createManifestAndSW(){
       const iconSVG = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
           <rect width="512" height="512" rx="110" fill="#000"/>
-          <circle cx="256" cy="256" r="8" fill="#fff"/>
+          <text x="256" y="278" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="46" letter-spacing="10">R</text>
         </svg>
       `;
       const iconURL = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(iconSVG);
@@ -382,7 +368,7 @@
 
       if ("serviceWorker" in navigator && location.protocol !== "file:") {
         const swCode = `
-          const CACHE = 'resonance-black-v1';
+          const CACHE = 'resonance-black-v2';
           self.addEventListener('install', (e) => {
             self.skipWaiting();
             e.waitUntil(caches.open(CACHE).then(cache => cache.addAll(['./']).catch(()=>{})));
@@ -432,8 +418,6 @@
       document.querySelectorAll(".genre").forEach(el => el.classList.remove("active"));
       const active = document.querySelector(`[data-genre-id="${CSS.escape(id)}"]`);
       if (active) active.classList.add("active");
-
-      document.body.classList.toggle("glow-lofi", id === "lofi");
     }
 
     async function ensureAudioContext(){
@@ -532,15 +516,11 @@
     });
 
     audio.addEventListener("ended", async () => {
-      if (currentGenre?.mode === "local-list") {
-        await nextLocal();
-      }
+      if (currentGenre?.mode === "local-list") await nextLocal();
     });
 
     audio.addEventListener("error", async () => {
-      if (currentGenre?.mode === "stream") {
-        await retryStream();
-      }
+      if (currentGenre?.mode === "stream") await retryStream();
     });
 
     function createArtworkDataURL(text){
@@ -548,7 +528,7 @@
       return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
           <rect width="512" height="512" rx="96" fill="#000"/>
-          <text x="256" y="270" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="44" letter-spacing="8">${safe}</text>
+          <text x="256" y="270" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="42" letter-spacing="10">${safe}</text>
         </svg>
       `);
     }
@@ -616,39 +596,57 @@
       ctx.clearRect(0, 0, w, h);
 
       const e = getEnergy();
-      const glowAlpha = currentGenre?.id === "lofi" ? 0.12 + e * 0.45 : 0.02 + e * 0.08;
+      const lofiActive = currentGenre?.id === "lofi";
 
-      const rightGlow = ctx.createRadialGradient(w * .92, h * .52, 0, w * .92, h * .52, Math.min(w, h) * .28);
-      rightGlow.addColorStop(0, `rgba(53,184,255,${glowAlpha})`);
-      rightGlow.addColorStop(.25, `rgba(53,184,255,${glowAlpha * .35})`);
-      rightGlow.addColorStop(1, 'rgba(53,184,255,0)');
-      ctx.fillStyle = rightGlow;
-      ctx.fillRect(0, 0, w, h);
+      const targetGlow = lofiActive
+        ? 0.20 + e * 0.85 + (Math.sin(t * 5.2) * 0.08 + 0.08)
+        : 0.015 + e * 0.06;
+
+      rightGlowLevel += (targetGlow - rightGlowLevel) * 0.08;
+
+      const bandX = w * 0.985;
+      const bandWidth = Math.max(18, w * 0.022);
+
+      const bandGlow = ctx.createLinearGradient(bandX - bandWidth * 4, 0, bandX, 0);
+      bandGlow.addColorStop(0, 'rgba(53,184,255,0)');
+      bandGlow.addColorStop(0.55, `rgba(53,184,255,${rightGlowLevel * 0.22})`);
+      bandGlow.addColorStop(0.82, `rgba(53,184,255,${rightGlowLevel * 0.75})`);
+      bandGlow.addColorStop(1, `rgba(160,225,255,${Math.min(1, rightGlowLevel * 1.15)})`);
+
+      ctx.fillStyle = bandGlow;
+      ctx.fillRect(w - bandWidth * 6, 0, bandWidth * 6, h);
+
+      const centerGlow = ctx.createRadialGradient(w * 0.985, h * 0.5, 0, w * 0.985, h * 0.5, Math.min(w, h) * 0.23);
+      centerGlow.addColorStop(0, `rgba(160,225,255,${rightGlowLevel * 0.55})`);
+      centerGlow.addColorStop(.25, `rgba(53,184,255,${rightGlowLevel * 0.28})`);
+      centerGlow.addColorStop(1, 'rgba(53,184,255,0)');
+      ctx.fillStyle = centerGlow;
+      ctx.fillRect(w - Math.min(w, h) * 0.28, h * 0.18, Math.min(w, h) * 0.28, h * 0.64);
 
       const bottomGlow = ctx.createRadialGradient(w * .5, h * .88, 0, w * .5, h * .88, Math.min(w, h) * .22);
-      bottomGlow.addColorStop(0, `rgba(118,188,255,${0.035 + e * .18})`);
+      bottomGlow.addColorStop(0, `rgba(118,188,255,${0.03 + e * .18})`);
       bottomGlow.addColorStop(1, 'rgba(118,188,255,0)');
       ctx.fillStyle = bottomGlow;
       ctx.fillRect(0, 0, w, h);
 
       for (const s of stars){
         ctx.beginPath();
-        ctx.fillStyle = `rgba(255,255,255,${s.a * (.5 + e)})`;
+        ctx.fillStyle = `rgba(255,255,255,${s.a * (.45 + rightGlowLevel * 0.5)})`;
         ctx.arc(s.x * w, s.y * h, s.r, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      if (currentGenre?.id === "lofi"){
-        const x = w * .77;
-        const y = h * .46;
-        const pulse = 42 + e * 74 + Math.sin(t * 2.2) * 8;
+      if (lofiActive){
+        const x = w * 0.962;
+        const y = h * 0.51;
+        const pulse = 18 + e * 34 + Math.sin(t * 6.4) * 4;
 
-        ctx.beginPath();
         const dotGlow = ctx.createRadialGradient(x, y, 0, x, y, pulse);
-        dotGlow.addColorStop(0, `rgba(53,184,255,${0.18 + e * .45})`);
-        dotGlow.addColorStop(.35, `rgba(53,184,255,${0.06 + e * .12})`);
+        dotGlow.addColorStop(0, `rgba(180,232,255,${rightGlowLevel * 0.95})`);
+        dotGlow.addColorStop(.38, `rgba(53,184,255,${rightGlowLevel * 0.38})`);
         dotGlow.addColorStop(1, 'rgba(53,184,255,0)');
         ctx.fillStyle = dotGlow;
+        ctx.beginPath();
         ctx.arc(x, y, pulse, 0, Math.PI * 2);
         ctx.fill();
       }
