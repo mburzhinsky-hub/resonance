@@ -14,7 +14,6 @@
       --bg:#000000;
       --text:#ffffff;
       --muted:rgba(255,255,255,.24);
-      --accent:#35b8ff;
       --safe-top:max(14px, env(safe-area-inset-top));
       --safe-bottom:max(18px, env(safe-area-inset-bottom));
     }
@@ -81,6 +80,8 @@
       align-items:center;
       min-height:72px;
       padding-top:6px;
+      position:relative;
+      z-index:2;
     }
 
     .logo{
@@ -106,6 +107,7 @@
     .spacer-top{
       height:10vh;
       min-height:46px;
+      flex:0 0 auto;
     }
 
     .genres{
@@ -117,6 +119,7 @@
       margin-top:8px;
       position:relative;
       z-index:2;
+      flex:0 0 auto;
     }
 
     .genre{
@@ -155,7 +158,7 @@
     }
 
     .genre.active .genre-dot{
-      background:var(--accent);
+      background:#35b8ff;
       box-shadow:
         0 0 12px rgba(53,184,255,.95),
         0 0 24px rgba(53,184,255,.35);
@@ -253,6 +256,7 @@
 
       <div class="content">
         <div class="spacer-top"></div>
+
         <div class="genres" id="genres"></div>
 
         <div class="bottom">
@@ -273,28 +277,19 @@
   <script>
     const APP_NAME = "RESONANCE";
 
-    /*
-      КАК ДОБАВЛЯТЬ ФАЙЛЫ:
-      Просто клади mp3 рядом с index.html по шаблону:
-      lofi-1.mp3 ... lofi-100.mp3
-      rap-1.mp3  ... rap-100.mp3
-      jazz-1.mp3 ... jazz-100.mp3
-      chill-1.mp3 ... chill-100.mp3
-
-      Код переписывать не нужно.
-      Плеер сам попробует найти файлы от 1 до 100.
-      Если найдено, например, только lofi-1 ... lofi-5,
-      после lofi-5 снова включится lofi-1.
-    */
-
     const GENRES = [
-      { id: "lofi",  name: "Lo-Fi",  mode: "local-list", prefix: "lofi",  maxFiles: 100 },
-      { id: "rap",   name: "Rap",    mode: "local-list", prefix: "rap",   maxFiles: 100 },
-      { id: "jazz",  name: "Jazz",   mode: "local-list", prefix: "jazz",  maxFiles: 100 },
-      { id: "chill", name: "Chill",  mode: "stream", urls: [
-        "https://ice5.somafm.com/dronezone-128-mp3",
-        "https://ice3.somafm.com/dronezone-128-mp3"
-      ]}
+      { id: "lofi",  name: "Lo-Fi",  mode: "local-list", prefix: "lofi", maxFiles: 100 },
+      { id: "rap",   name: "Rap",    mode: "local-list", prefix: "rap",  maxFiles: 100 },
+      { id: "jazz",  name: "Jazz",   mode: "local-list", prefix: "jazz", maxFiles: 100 },
+      {
+        id: "chill",
+        name: "Chill",
+        mode: "stream",
+        urls: [
+          "https://ice5.somafm.com/dronezone-128-mp3",
+          "https://ice3.somafm.com/dronezone-128-mp3"
+        ]
+      }
     ];
 
     const audio = document.getElementById("audio");
@@ -356,7 +351,7 @@
 
       if ("serviceWorker" in navigator && location.protocol !== "file:") {
         const swCode = `
-          const CACHE = 'resonance-scalable-v1';
+          const CACHE = 'resonance-scalable-v2';
           self.addEventListener('install', (e) => {
             self.skipWaiting();
             e.waitUntil(caches.open(CACHE).then(cache => cache.addAll(['./']).catch(()=>{})));
@@ -472,10 +467,10 @@
       for (let i = 1; i <= genre.maxFiles; i++){
         const url = `./${genre.prefix}-${i}.mp3`;
         const exists = await fileExists(url);
+
         if (exists) {
           tracks.push(url);
         } else if (location.protocol !== "file:") {
-          // в режиме сервера можно остановиться на первом пропуске
           break;
         }
       }
@@ -679,7 +674,7 @@
       } else {
         bandGlow.addColorStop(0, "rgba(255,255,255,0)");
         bandGlow.addColorStop(0.65, `rgba(120,120,120,${rightGlowLevel * 0.12})`);
-        bandGlow.addColorStop(1, `rgba(180,180,180,${rightGlowLevel * 0.25)})`);
+        bandGlow.addColorStop(1, `rgba(180,180,180,${rightGlowLevel * 0.25})`);
       }
 
       ctx.fillStyle = bandGlow;
