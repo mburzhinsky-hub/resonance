@@ -2,75 +2,84 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>RESONANCE</title>
 
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#050505" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="RESONANCE" />
 
   <style>
     :root{
-      --bg:#000;
-      --text:#fff;
-      --muted:rgba(255,255,255,.34);
-      --muted-2:rgba(255,255,255,.18);
-      --line:rgba(255,255,255,.08);
-      --line-2:rgba(255,255,255,.14);
-      --panel:rgba(255,255,255,.04);
-      --panel-2:rgba(255,255,255,.06);
-      --accent:#bfe8ff;
-      --safe-top:max(14px, env(safe-area-inset-top));
+      --bg:#050505;
+      --panel:rgba(255,255,255,.05);
+      --panel-strong:rgba(255,255,255,.08);
+      --line:rgba(255,255,255,.10);
+      --line-strong:rgba(255,255,255,.18);
+      --text:#ffffff;
+      --text-soft:rgba(255,255,255,.74);
+      --text-muted:rgba(255,255,255,.52);
+      --text-faint:rgba(255,255,255,.28);
+      --safe-top:max(18px, env(safe-area-inset-top));
       --safe-bottom:max(18px, env(safe-area-inset-bottom));
+      --shadow:0 18px 48px rgba(0,0,0,.38);
+      --focus:0 0 0 3px rgba(190, 228, 255, .22);
+      color-scheme:dark;
     }
 
-    *{
-      box-sizing:border-box;
-      -webkit-tap-highlight-color:transparent;
-      user-select:none;
-      -webkit-user-select:none;
-    }
+    *{ box-sizing:border-box; }
 
-    html,body{
+    html, body{
+      margin:0;
       width:100%;
       height:100%;
-      margin:0;
-      overflow:hidden;
-      background:#000;
+      background:var(--bg);
       color:var(--text);
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Display",
-        "SF Pro Text",
-        "Inter",
-        "Helvetica Neue",
-        Arial,
-        sans-serif;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Inter","Helvetica Neue",Arial,sans-serif;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
       text-rendering:optimizeLegibility;
     }
 
     body{
+      overflow:hidden;
       position:relative;
-      background:#000;
+      background:#050505;
     }
 
-    #bgCanvas{
+    button, input{
+      font:inherit;
+    }
+
+    button{
+      appearance:none;
+      -webkit-appearance:none;
+      border:none;
+      background:none;
+      color:inherit;
+      padding:0;
+      cursor:pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible{
+      outline:none;
+      box-shadow:var(--focus);
+    }
+
+    #ambient{
       position:fixed;
       inset:0;
       width:100%;
       height:100%;
       display:block;
-      z-index:0;
       pointer-events:none;
+      z-index:0;
     }
 
     .app{
       position:relative;
-      z-index:2;
+      z-index:1;
       width:100%;
       height:100%;
       display:flex;
@@ -78,69 +87,37 @@
       align-items:stretch;
     }
 
-    .phone{
-      position:relative;
+    .shell{
       width:100%;
-      max-width:430px;
-      height:100%;
-      padding:
-        calc(var(--safe-top) + 6px)
-        22px
-        calc(var(--safe-bottom) + 16px);
+      max-width:440px;
+      min-height:100%;
+      padding:calc(var(--safe-top) + 2px) 20px calc(var(--safe-bottom) + 20px);
       display:flex;
       flex-direction:column;
-      overflow:hidden;
-      background:transparent;
+      gap:18px;
     }
 
-    .gesture-layer{
-      position:absolute;
-      inset:0;
-      z-index:3;
-      background:transparent;
-    }
-
-    .top{
-      position:relative;
-      z-index:4;
-      min-height:72px;
+    .topbar{
+      min-height:44px;
       display:flex;
       align-items:center;
       justify-content:center;
       flex:0 0 auto;
     }
 
-    .logo{
-      font-size:20px;
-      font-weight:300;
-      letter-spacing:.34em;
-      color:rgba(255,255,255,.84);
-      transition:opacity .24s ease, text-shadow .24s ease;
+    .brand{
+      font-size:17px;
+      font-weight:400;
+      letter-spacing:.28em;
+      color:rgba(255,255,255,.74);
+      text-transform:uppercase;
       white-space:nowrap;
-    }
-
-    .logo.playing{
-      text-shadow:
-        0 0 16px rgba(255,255,255,.08),
-        0 0 30px rgba(160,220,255,.08);
-    }
-
-    .content{
-      position:relative;
-      z-index:4;
-      flex:1;
-      min-height:0;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      gap:10px;
+      user-select:none;
     }
 
     .genres-wrap{
-      display:flex;
-      justify-content:center;
-      margin-top:8px;
       flex:0 0 auto;
+      overflow:hidden;
     }
 
     .genres{
@@ -148,101 +125,79 @@
       align-items:center;
       gap:10px;
       overflow-x:auto;
-      max-width:100%;
-      padding:4px 2px 4px;
+      padding:2px 0 4px;
       scrollbar-width:none;
       -ms-overflow-style:none;
+      scroll-snap-type:x proximity;
     }
 
-    .genres::-webkit-scrollbar{
-      display:none;
-    }
+    .genres::-webkit-scrollbar{ display:none; }
 
-    .genre{
-      border:none;
-      appearance:none;
-      background:rgba(255,255,255,.03);
-      color:rgba(255,255,255,.46);
-      border:1px solid rgba(255,255,255,.055);
-      border-radius:999px;
-      min-width:76px;
-      min-height:46px;
+    .genre-btn{
+      flex:0 0 auto;
+      min-height:44px;
       padding:0 18px;
-      font-size:15px;
-      font-weight:500;
-      letter-spacing:-.01em;
-      cursor:pointer;
-      transition:
-        color .2s ease,
-        background .2s ease,
-        border-color .2s ease,
-        box-shadow .2s ease,
-        transform .14s ease;
-      white-space:nowrap;
-      backdrop-filter:blur(8px);
-      -webkit-backdrop-filter:blur(8px);
-      position:relative;
-      overflow:hidden;
+      border-radius:999px;
+      color:var(--text-soft);
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      transition:transform .15s ease, background .2s ease, border-color .2s ease, color .2s ease;
+      scroll-snap-align:start;
+      user-select:none;
     }
 
-    .genre:active{
-      transform:scale(.985);
-    }
+    .genre-btn:hover{ background:rgba(255,255,255,.06); }
+    .genre-btn:active{ transform:scale(.985); }
 
-    .genre.active{
+    .genre-btn.active{
       color:#fff;
-      background:rgba(255,255,255,.06);
-      border-color:rgba(255,255,255,.15);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.05),
-        0 0 0 1px rgba(255,255,255,.02);
+      background:rgba(255,255,255,.09);
+      border-color:rgba(255,255,255,.18);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
     }
 
-    .center{
+    .main{
+      flex:1 1 auto;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:24px;
+    }
+
+    .hero{
       flex:1 1 auto;
       min-height:0;
       display:flex;
       align-items:center;
       justify-content:center;
       text-align:center;
-      padding:0 8px;
+      padding:12px 4px 0;
     }
 
-    .now-playing{
+    .hero-inner{
       width:100%;
-      max-width:320px;
+      max-width:340px;
       display:flex;
       flex-direction:column;
       align-items:center;
-      justify-content:center;
-      gap:10px;
+      gap:14px;
     }
 
-    .track-title{
-      width:100%;
-      font-size:clamp(38px, 11vw, 58px);
-      line-height:.95;
-      font-weight:600;
-      letter-spacing:-.07em;
-      color:#fff;
-      word-break:break-word;
-      text-wrap:balance;
-      transition:opacity .2s ease, transform .2s ease;
-    }
-
-    .track-sub{
+    .meta-row{
       min-height:22px;
       display:flex;
       align-items:center;
       justify-content:center;
       gap:10px;
-      color:rgba(255,255,255,.34);
-      font-size:15px;
+      color:var(--text-muted);
+      font-size:14px;
       font-weight:500;
       letter-spacing:-.01em;
+      flex-wrap:wrap;
     }
 
-    .dot-sep{
+    .meta-dot{
       width:4px;
       height:4px;
       border-radius:50%;
@@ -250,52 +205,123 @@
       flex:0 0 4px;
     }
 
-    .micro{
+    .track-title{
       width:100%;
-      height:42px;
-      margin-top:10px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      pointer-events:none;
+      margin:0;
+      font-size:clamp(36px, 11vw, 58px);
+      line-height:.94;
+      font-weight:650;
+      letter-spacing:-.06em;
+      text-wrap:balance;
+      word-break:break-word;
     }
 
-    .micro-dots{
+    .progress-block{
+      width:100%;
       display:flex;
-      align-items:center;
-      justify-content:center;
+      flex-direction:column;
       gap:10px;
-      min-width:54px;
-      height:18px;
+      margin-top:4px;
     }
 
-    .micro-dot{
-      width:5px;
-      height:5px;
+    .progress{
+      appearance:none;
+      -webkit-appearance:none;
+      width:100%;
+      height:28px;
+      margin:0;
+      background:transparent;
+      cursor:pointer;
+    }
+
+    .progress::-webkit-slider-runnable-track{
+      height:4px;
+      border-radius:999px;
+      background:linear-gradient(90deg, rgba(255,255,255,.80) 0 var(--progress, 0%), rgba(255,255,255,.14) var(--progress, 0%) 100%);
+    }
+
+    .progress::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width:16px;
+      height:16px;
       border-radius:50%;
-      background:rgba(255,255,255,.20);
-      box-shadow:none;
+      background:#fff;
+      border:none;
+      margin-top:-6px;
+      box-shadow:0 0 0 4px rgba(255,255,255,.10);
+    }
+
+    .progress::-moz-range-track{
+      height:4px;
+      border:none;
+      border-radius:999px;
+      background:rgba(255,255,255,.14);
+    }
+
+    .progress::-moz-range-progress{
+      height:4px;
+      border-radius:999px;
+      background:rgba(255,255,255,.84);
+    }
+
+    .progress::-moz-range-thumb{
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      border:none;
+      background:#fff;
+      box-shadow:0 0 0 4px rgba(255,255,255,.10);
+    }
+
+    .progress:disabled{
+      cursor:default;
       opacity:.55;
-      transform:scale(1);
-      transition:
-        opacity .25s ease,
-        transform .25s ease,
-        background .25s ease,
-        box-shadow .25s ease;
     }
 
-    .micro-dot.live{
-      background:rgba(255,255,255,.78);
-      box-shadow:0 0 12px rgba(180,225,255,.22);
+    .time-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      color:var(--text-muted);
+      font-size:14px;
+      font-variant-numeric:tabular-nums;
     }
 
-    .bottom{
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-height:34px;
+      padding:0 14px;
+      border-radius:999px;
+      color:var(--text-soft);
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+    }
+
+    .status-pulse{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:rgba(255,255,255,.26);
+      transition:background .2s ease, box-shadow .2s ease, transform .2s ease;
+    }
+
+    .status-pill.playing .status-pulse{
+      background:rgba(255,255,255,.92);
+      box-shadow:0 0 12px rgba(185, 229, 255, .28);
+      transform:scale(1.08);
+    }
+
+    .controls-zone{
       flex:0 0 auto;
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:14px;
-      padding-bottom:2px;
+      gap:16px;
     }
 
     .controls{
@@ -304,106 +330,87 @@
       display:grid;
       grid-template-columns:1fr auto 1fr;
       align-items:center;
-      gap:12px;
+      gap:14px;
+    }
+
+    .nav-btn,
+    .list-btn{
+      min-height:50px;
+      border-radius:999px;
+      color:var(--text-soft);
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      transition:transform .15s ease, background .2s ease, color .2s ease, border-color .2s ease;
+      user-select:none;
     }
 
     .nav-btn{
-      width:52px;
-      height:52px;
-      border:none;
-      background:transparent;
-      color:rgba(255,255,255,.42);
-      border-radius:50%;
+      width:54px;
+      height:54px;
       display:grid;
       place-items:center;
-      cursor:pointer;
-      transition:
-        transform .14s ease,
-        color .2s ease,
-        background .2s ease;
       justify-self:center;
-      position:relative;
-      z-index:5;
     }
 
-    .nav-btn:hover{
+    .nav-btn:hover,
+    .list-btn:hover{
+      background:rgba(255,255,255,.07);
       color:#fff;
-      background:rgba(255,255,255,.035);
+      border-color:rgba(255,255,255,.14);
     }
 
-    .nav-btn:active{
-      transform:scale(.96);
+    .nav-btn:active,
+    .list-btn:active,
+    .play-btn:active{
+      transform:scale(.98);
+    }
+
+    .nav-btn:disabled,
+    .play-btn:disabled,
+    .list-btn:disabled{
+      opacity:.4;
+      cursor:not-allowed;
+      transform:none;
     }
 
     .play-btn{
-      width:102px;
-      height:102px;
+      width:104px;
+      height:104px;
       border-radius:50%;
-      border:1px solid rgba(255,255,255,.10);
-      background:
-        radial-gradient(circle at 50% 34%, rgba(255,255,255,.07), rgba(255,255,255,.02) 55%, rgba(255,255,255,.01)),
-        rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.12);
       color:#fff;
       display:grid;
       place-items:center;
-      cursor:pointer;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.07),
-        0 10px 30px rgba(0,0,0,.38);
-      transition:
-        transform .18s ease,
-        box-shadow .22s ease,
-        border-color .22s ease;
-      backdrop-filter:blur(14px);
-      -webkit-backdrop-filter:blur(14px);
-      position:relative;
-      z-index:5;
-    }
-
-    .play-btn:active{
-      transform:scale(.97);
+      background:
+        radial-gradient(circle at 50% 30%, rgba(255,255,255,.10), rgba(255,255,255,.03) 58%, rgba(255,255,255,.02)),
+        rgba(255,255,255,.03);
+      box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.08);
+      transition:transform .16s ease, box-shadow .22s ease, border-color .22s ease;
+      user-select:none;
     }
 
     .play-btn.playing{
-      border-color:rgba(255,255,255,.14);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.09),
-        0 12px 34px rgba(0,0,0,.44),
-        0 0 20px rgba(170,225,255,.08);
+      border-color:rgba(255,255,255,.18);
+      box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.10), 0 0 24px rgba(170, 225, 255, .08);
     }
 
-    .queue-trigger{
-      border:none;
-      background:transparent;
-      color:rgba(255,255,255,.42);
-      font-size:14px;
-      font-weight:500;
-      letter-spacing:-.01em;
-      padding:10px 14px;
-      border-radius:999px;
-      cursor:pointer;
-      transition:color .2s ease, background .2s ease, transform .14s ease;
-      position:relative;
-      z-index:5;
-    }
-
-    .queue-trigger:hover{
-      color:#fff;
-      background:rgba(255,255,255,.03);
-    }
-
-    .queue-trigger:active{
-      transform:scale(.985);
+    .list-btn{
+      min-width:148px;
+      padding:0 18px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
     }
 
     .sheet-backdrop{
       position:fixed;
       inset:0;
       z-index:20;
-      background:rgba(0,0,0,.42);
+      background:rgba(0,0,0,.44);
       opacity:0;
       pointer-events:none;
-      transition:opacity .24s ease;
+      transition:opacity .22s ease;
       backdrop-filter:blur(10px);
       -webkit-backdrop-filter:blur(10px);
     }
@@ -415,14 +422,13 @@
 
     .sheet{
       position:fixed;
-      left:0;
-      right:0;
-      bottom:0;
+      inset:auto 0 0;
       z-index:21;
-      transform:translateY(104%);
-      transition:transform .3s cubic-bezier(.2,.8,.2,1);
       padding:0 10px calc(var(--safe-bottom) + 10px);
+      transform:translateY(104%);
+      transition:transform .28s cubic-bezier(.2,.8,.2,1);
       pointer-events:none;
+      touch-action:none;
     }
 
     .sheet.open{
@@ -432,74 +438,72 @@
 
     .sheet-card{
       width:100%;
-      max-width:430px;
+      max-width:440px;
       margin:0 auto;
-      border-radius:30px 30px 22px 22px;
-      background:linear-gradient(to bottom, rgba(22,22,22,.97), rgba(8,8,8,.98));
-      border:1px solid rgba(255,255,255,.07);
-      box-shadow:0 28px 80px rgba(0,0,0,.58);
+      background:linear-gradient(to bottom, rgba(21,21,21,.98), rgba(8,8,8,.99));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:28px 28px 22px 22px;
       overflow:hidden;
+      box-shadow:0 26px 80px rgba(0,0,0,.55);
     }
 
     .sheet-head{
       padding:12px 18px 10px;
       border-bottom:1px solid rgba(255,255,255,.06);
+      user-select:none;
+      touch-action:none;
     }
 
     .sheet-handle{
       width:42px;
       height:5px;
-      border-radius:999px;
-      background:rgba(255,255,255,.14);
       margin:0 auto 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.16);
     }
 
-    .sheet-title{
+    .sheet-title-row{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
-      min-height:24px;
     }
 
-    .sheet-title strong{
+    .sheet-title-row strong{
       font-size:15px;
-      font-weight:600;
+      font-weight:650;
       letter-spacing:-.01em;
-      color:#fff;
     }
 
-    .sheet-title span{
+    .sheet-title-row span{
+      color:var(--text-muted);
       font-size:13px;
-      color:rgba(255,255,255,.36);
     }
 
     .track-list{
-      max-height:min(52vh, 430px);
+      max-height:min(56vh, 460px);
       overflow:auto;
       padding:8px 10px 10px;
       scrollbar-width:none;
       -ms-overflow-style:none;
+      overscroll-behavior:contain;
     }
 
-    .track-list::-webkit-scrollbar{
-      display:none;
-    }
+    .track-list::-webkit-scrollbar{ display:none; }
 
     .track-item{
       width:100%;
-      border:none;
-      background:transparent;
-      color:#fff;
+      min-height:58px;
+      padding:12px 12px;
+      border-radius:18px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:14px;
       text-align:left;
-      padding:14px 12px;
-      border-radius:16px;
-      cursor:pointer;
-      transition:background .18s ease, transform .14s ease;
+      background:transparent;
+      border:1px solid transparent;
+      transition:transform .15s ease, background .18s ease, border-color .18s ease;
     }
 
     .track-item:hover{
@@ -511,24 +515,33 @@
     }
 
     .track-item.active{
-      background:rgba(255,255,255,.055);
-      box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+      background:rgba(255,255,255,.06);
+      border-color:rgba(255,255,255,.08);
     }
 
-    .track-item-main{
+    .track-main{
+      min-width:0;
       display:flex;
       align-items:center;
       gap:12px;
-      min-width:0;
       flex:1;
     }
 
-    .track-index{
-      width:24px;
-      flex:0 0 24px;
+    .track-number{
+      width:28px;
+      flex:0 0 28px;
+      color:var(--text-faint);
       font-size:13px;
-      font-weight:600;
-      color:rgba(255,255,255,.26);
+      font-weight:650;
+      text-align:center;
+      font-variant-numeric:tabular-nums;
+    }
+
+    .track-copy{
+      min-width:0;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
     }
 
     .track-name{
@@ -537,45 +550,55 @@
       text-overflow:ellipsis;
       white-space:nowrap;
       font-size:15px;
-      font-weight:500;
+      font-weight:550;
       letter-spacing:-.01em;
     }
 
-    .track-item-meta{
-      flex:0 0 auto;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      color:rgba(255,255,255,.28);
+    .track-sub{
+      color:var(--text-muted);
       font-size:12px;
     }
 
-    .playing-pill{
+    .track-indicator{
       width:8px;
       height:8px;
       border-radius:50%;
-      background:rgba(255,255,255,.85);
-      box-shadow:0 0 10px rgba(180,225,255,.24);
+      background:rgba(255,255,255,.18);
+      flex:0 0 8px;
+      transition:background .2s ease, box-shadow .2s ease;
+    }
+
+    .track-item.active .track-indicator{
+      background:rgba(255,255,255,.92);
+      box-shadow:0 0 10px rgba(180, 225, 255, .28);
+    }
+
+    .empty-state{
+      padding:22px 14px 26px;
+      color:var(--text-muted);
+      font-size:14px;
+      line-height:1.5;
     }
 
     .toast{
       position:fixed;
       left:50%;
-      bottom:calc(var(--safe-bottom) + 116px);
+      bottom:calc(var(--safe-bottom) + 122px);
       transform:translateX(-50%) translateY(10px);
-      z-index:40;
-      padding:10px 14px;
+      z-index:30;
+      padding:11px 15px;
       border-radius:999px;
-      border:1px solid rgba(255,255,255,.07);
-      background:rgba(255,255,255,.08);
+      background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.10);
       color:#fff;
       font-size:13px;
-      font-weight:500;
+      font-weight:550;
       backdrop-filter:blur(12px);
       -webkit-backdrop-filter:blur(12px);
+      box-shadow:0 14px 38px rgba(0,0,0,.28);
       opacity:0;
       pointer-events:none;
-      transition:opacity .22s ease, transform .22s ease;
+      transition:opacity .2s ease, transform .2s ease;
       white-space:nowrap;
     }
 
@@ -584,798 +607,854 @@
       transform:translateX(-50%) translateY(0);
     }
 
-    @media (min-width:431px){
-      .phone{
-        box-shadow:0 0 70px rgba(0,0,0,.34);
+    .sr-only{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+
+    @media (min-width: 480px){
+      .shell{
+        padding-left:24px;
+        padding-right:24px;
       }
     }
   </style>
 </head>
 <body>
-  <canvas id="bgCanvas"></canvas>
+  <canvas id="ambient" aria-hidden="true"></canvas>
 
   <div class="app">
-    <div class="phone">
-      <div class="gesture-layer" id="gestureLayer" aria-hidden="true"></div>
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand">RESONANCE</div>
+      </header>
 
-      <div class="top">
-        <div class="logo" id="logo">RESONANCE</div>
+      <div class="genres-wrap">
+        <div class="genres" id="genres" aria-label="Жанры"></div>
       </div>
 
-      <div class="content">
-        <div class="genres-wrap">
-          <div class="genres" id="genres"></div>
-        </div>
-
-        <div class="center">
-          <div class="now-playing">
-            <div class="track-title" id="trackTitle">lofi 1</div>
-
-            <div class="track-sub">
-              <span id="trackCounter">1 / 1</span>
-              <span class="dot-sep"></span>
-              <span id="trackTime">00:00</span>
+      <main class="main">
+        <section class="hero" aria-label="Сейчас играет">
+          <div class="hero-inner">
+            <div class="meta-row">
+              <span id="genreLabel">Lo‑Fi</span>
+              <span class="meta-dot" aria-hidden="true"></span>
+              <span id="trackPosition">1 / 1</span>
             </div>
 
-            <div class="micro" aria-hidden="true">
-              <div class="micro-dots">
-                <span class="micro-dot" id="dot1"></span>
-                <span class="micro-dot" id="dot2"></span>
-                <span class="micro-dot" id="dot3"></span>
+            <h1 class="track-title" id="trackTitle">Загрузка библиотеки…</h1>
+
+            <div class="status-pill" id="statusPill">
+              <span class="status-pulse" aria-hidden="true"></span>
+              <span id="trackStatus">Подготовка</span>
+            </div>
+
+            <div class="progress-block">
+              <label class="sr-only" for="progress">Позиция трека</label>
+              <input id="progress" class="progress" type="range" min="0" max="1000" step="1" value="0" disabled />
+              <div class="time-row">
+                <span id="currentTime">00:00</span>
+                <span id="durationTime">00:00</span>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="bottom">
+        <section class="controls-zone" aria-label="Управление плеером">
           <div class="controls">
-            <button class="nav-btn" id="prevBtn" aria-label="Предыдущий трек">
+            <button class="nav-btn" id="prevBtn" type="button" aria-label="Предыдущий трек">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M15.5 18L9.5 12L15.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M15.5 18L9.5 12L15.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
             </button>
 
-            <button class="play-btn" id="playBtn" aria-label="Воспроизвести или пауза">
+            <button class="play-btn" id="playBtn" type="button" aria-label="Воспроизвести или поставить на паузу" aria-pressed="false">
               <svg id="playIcon" width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M9 6.7v10.6c0 .7.8 1.14 1.4.78l7.9-5.3a.93.93 0 0 0 0-1.56l-7.9-5.3A.93.93 0 0 0 9 6.7Z" fill="currentColor"/>
+                <path d="M9 6.7v10.6c0 .7.8 1.14 1.4.78l7.9-5.3a.93.93 0 0 0 0-1.56l-7.9-5.3A.93.93 0 0 0 9 6.7Z" fill="currentColor"></path>
               </svg>
             </button>
 
-            <button class="nav-btn" id="nextBtn" aria-label="Следующий трек">
+            <button class="nav-btn" id="nextBtn" type="button" aria-label="Следующий трек">
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M8.5 18L14.5 12L8.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.5 18L14.5 12L8.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>
             </button>
           </div>
 
-          <button class="queue-trigger" id="queueTrigger" aria-label="Открыть список треков">
-            Список треков
+          <button class="list-btn" id="queueBtn" type="button" aria-haspopup="dialog" aria-expanded="false">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 7H18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+              <path d="M7 12H18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+              <path d="M7 17H14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+            </svg>
+            <span>Список треков</span>
           </button>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   </div>
 
   <div class="sheet-backdrop" id="sheetBackdrop"></div>
 
-  <div class="sheet" id="sheet" aria-hidden="true">
+  <section class="sheet" id="sheet" aria-hidden="true" aria-labelledby="sheetTitle" role="dialog">
     <div class="sheet-card">
-      <div class="sheet-head">
-        <div class="sheet-handle"></div>
-        <div class="sheet-title">
+      <div class="sheet-head" id="sheetHandle">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <div class="sheet-title-row">
           <strong id="sheetTitle">Треки</strong>
-          <span id="sheetMeta">0</span>
+          <span id="sheetMeta">0 треков</span>
         </div>
       </div>
       <div class="track-list" id="trackList"></div>
     </div>
-  </div>
+  </section>
 
-  <div class="toast" id="toast">Трек не найден</div>
-
-  <audio id="audio" preload="metadata" playsinline webkit-playsinline></audio>
+  <div class="toast" id="toast" aria-live="polite"></div>
+  <audio id="audio" preload="metadata" playsinline></audio>
 
   <script>
-    const APP_NAME = "RESONANCE";
+    const APP_NAME = 'RESONANCE';
 
+    // Оставил формат именования как в твоем текущем проекте:
+    // ./lofi-1.mp3, ./lofi-2.mp3, ./jazz-1.mp3 и т.д.
     const GENRES = [
-      { id: "lofi", name: "Lo-Fi", mode: "local-list", prefix: "lofi", maxFiles: 100 },
-      { id: "rap", name: "Rap", mode: "local-list", prefix: "rap", maxFiles: 100 },
-      { id: "jazz", name: "Jazz", mode: "local-list", prefix: "jazz", maxFiles: 100 },
-      {
-        id: "chill",
-        name: "Chill",
-        mode: "stream",
-        urls: [
-          "https://ice5.somafm.com/dronezone-128-mp3",
-          "https://ice3.somafm.com/dronezone-128-mp3"
-        ]
-      }
+      { id: 'lofi', name: 'Lo‑Fi', prefix: 'lofi', maxFiles: 100 },
+      { id: 'rap',  name: 'Rap',   prefix: 'rap',  maxFiles: 100 },
+      { id: 'jazz', name: 'Jazz',  prefix: 'jazz', maxFiles: 100 }
     ];
 
-    const audio = document.getElementById("audio");
-    const genresEl = document.getElementById("genres");
-    const playBtn = document.getElementById("playBtn");
-    const playIcon = document.getElementById("playIcon");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const logo = document.getElementById("logo");
+    const STORAGE_KEY = 'resonance-player-state-v1';
 
-    const trackTitleEl = document.getElementById("trackTitle");
-    const trackCounterEl = document.getElementById("trackCounter");
-    const trackTimeEl = document.getElementById("trackTime");
+    const audio = document.getElementById('audio');
+    const genresEl = document.getElementById('genres');
+    const playBtn = document.getElementById('playBtn');
+    const playIcon = document.getElementById('playIcon');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const queueBtn = document.getElementById('queueBtn');
+    const progressEl = document.getElementById('progress');
+    const genreLabelEl = document.getElementById('genreLabel');
+    const trackPositionEl = document.getElementById('trackPosition');
+    const trackTitleEl = document.getElementById('trackTitle');
+    const trackStatusEl = document.getElementById('trackStatus');
+    const statusPillEl = document.getElementById('statusPill');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationTimeEl = document.getElementById('durationTime');
+    const trackListEl = document.getElementById('trackList');
+    const sheetEl = document.getElementById('sheet');
+    const sheetBackdropEl = document.getElementById('sheetBackdrop');
+    const sheetTitleEl = document.getElementById('sheetTitle');
+    const sheetMetaEl = document.getElementById('sheetMeta');
+    const sheetHandleEl = document.getElementById('sheetHandle');
+    const toastEl = document.getElementById('toast');
+    const canvas = document.getElementById('ambient');
+    const ctx = canvas.getContext('2d', { alpha: true });
 
-    const queueTrigger = document.getElementById("queueTrigger");
-    const sheet = document.getElementById("sheet");
-    const sheetBackdrop = document.getElementById("sheetBackdrop");
-    const sheetTitle = document.getElementById("sheetTitle");
-    const sheetMeta = document.getElementById("sheetMeta");
-    const trackListEl = document.getElementById("trackList");
-    const toastEl = document.getElementById("toast");
-    const gestureLayer = document.getElementById("gestureLayer");
+    const state = {
+      currentGenreIndex: 0,
+      currentTrackIndex: 0,
+      currentTracks: [],
+      currentTitle: 'RESONANCE',
+      currentStatus: 'Подготовка',
+      toastTimer: null,
+      sheetOpen: false,
+      sheetDrag: null,
+      discoveryCache: new Map(),
+      selectionToken: 0,
+      lastIndexByGenre: {},
+      seekWasPlaying: false,
+      ambientPhase: 0
+    };
 
-    const dot1 = document.getElementById("dot1");
-    const dot2 = document.getElementById("dot2");
-    const dot3 = document.getElementById("dot3");
-
-    const canvas = document.getElementById("bgCanvas");
-    const ctx = canvas.getContext("2d", { alpha: true });
-
-    let currentGenre = GENRES[0];
-    let currentTrackList = [];
-    let currentLocalIndex = 0;
-    let currentStreamIndex = 0;
-    let currentTrackTitle = "lofi 1";
-    let sheetOpen = false;
-    let toastTimer = null;
-
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchStartTime = 0;
-
-    let fakeEnergy = 0.06;
-    let bgPulse = 0;
-
-    const localTrackCache = {};
-
-    const particles = Array.from({ length: 24 }, () => ({
+    const particles = Array.from({ length: 22 }, () => ({
       x: Math.random(),
       y: Math.random(),
-      r: Math.random() * 1.4 + 0.4,
-      a: Math.random() * .10 + .03,
-      drift: Math.random() * .18 + .05
+      r: Math.random() * 1.5 + 0.4,
+      alpha: Math.random() * 0.08 + 0.02,
+      speed: Math.random() * 0.18 + 0.04
     }));
 
-    function createManifestAndSW(){
-      const iconSVG = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <rect width="512" height="512" rx="120" fill="#000"/>
-          <text x="256" y="282" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="54" letter-spacing="12">R</text>
-        </svg>
-      `;
-      const iconURL = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(iconSVG);
+    function clamp(value, min, max){
+      return Math.min(max, Math.max(min, value));
+    }
 
-      const manifest = {
-        name: APP_NAME,
-        short_name: APP_NAME,
-        start_url: "./",
-        display: "standalone",
-        background_color: "#000000",
-        theme_color: "#000000",
-        icons: [
-          { src: iconURL, sizes: "192x192", type: "image/svg+xml", purpose: "any" },
-          { src: iconURL, sizes: "512x512", type: "image/svg+xml", purpose: "any" }
-        ]
-      };
+    function escapeHtml(value){
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
 
-      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
-      const manifestURL = URL.createObjectURL(manifestBlob);
-      const link = document.createElement("link");
-      link.rel = "manifest";
-      link.href = manifestURL;
-      document.head.appendChild(link);
+    function stripExtension(filename){
+      return filename.replace(/\.[^/.]+$/, '');
+    }
 
-      if ("serviceWorker" in navigator && location.protocol !== "file:") {
-        const swCode = `
-          const CACHE = 'resonance-minimal-v2';
-          self.addEventListener('install', (e) => {
-            self.skipWaiting();
-            e.waitUntil(caches.open(CACHE).then(cache => cache.addAll(['./']).catch(()=>{})));
-          });
-          self.addEventListener('activate', (e) => {
-            e.waitUntil(self.clients.claim());
-          });
-          self.addEventListener('fetch', (e) => {
-            if (e.request.method !== 'GET') return;
-            e.respondWith(
-              caches.match(e.request).then(cached => cached || fetch(e.request))
-            );
-          });
-        `;
-        const swBlob = new Blob([swCode], { type: "text/javascript" });
-        const swURL = URL.createObjectURL(swBlob);
-        navigator.serviceWorker.register(swURL).catch(() => {});
+    function prettifyFilename(url, fallbackIndex = 0){
+      try{
+        const fileName = decodeURIComponent(url.split('/').pop() || '');
+        const clean = stripExtension(fileName).replace(/[_-]+/g, ' ').trim();
+        if (clean) return clean;
+      }catch(error){}
+      return `Трек ${fallbackIndex + 1}`;
+    }
+
+    function formatTime(seconds){
+      if (!Number.isFinite(seconds) || seconds < 0) return '00:00';
+      const minutes = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function getCurrentGenre(){
+      return GENRES[state.currentGenreIndex] || GENRES[0];
+    }
+
+    function getCurrentTrack(){
+      return state.currentTracks[state.currentTrackIndex] || null;
+    }
+
+    function setStatus(text){
+      state.currentStatus = text;
+      trackStatusEl.textContent = text;
+      statusPillEl.classList.toggle('playing', !audio.paused && !!audio.src);
+    }
+
+    function setPlayButton(paused){
+      playBtn.classList.toggle('playing', !paused);
+      playBtn.setAttribute('aria-pressed', String(!paused));
+      playIcon.innerHTML = paused
+        ? '<path d="M9 6.7v10.6c0 .7.8 1.14 1.4.78l7.9-5.3a.93.93 0 0 0 0-1.56l-7.9-5.3A.93.93 0 0 0 9 6.7Z" fill="currentColor"></path>'
+        : '<path d="M8 6.5v11M16 6.5v11" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>';
+    }
+
+    function showToast(message){
+      clearTimeout(state.toastTimer);
+      toastEl.textContent = message;
+      toastEl.classList.add('show');
+      state.toastTimer = setTimeout(() => {
+        toastEl.classList.remove('show');
+      }, 1600);
+    }
+
+    function resizeCanvas(){
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function getGenreColors(genreId){
+      switch(genreId){
+        case 'rap': return ['210,210,210', '128,128,128'];
+        case 'jazz': return ['255,204,136', '255,136,178'];
+        case 'lofi':
+        default: return ['145,214,255', '160,178,255'];
       }
     }
 
-    function setPlayIcon(paused){
-      playIcon.innerHTML = paused
-        ? '<path d="M9 6.7v10.6c0 .7.8 1.14 1.4.78l7.9-5.3a.93.93 0 0 0 0-1.56l-7.9-5.3A.93.93 0 0 0 9 6.7Z" fill="currentColor"/>'
-        : '<path d="M8 6.5v11M16 6.5v11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>';
+    function drawAmbientFrame(timestamp){
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const isPlaying = !audio.paused && !!audio.src;
+      const energy = isPlaying ? 0.17 : 0.07;
+      state.ambientPhase += (energy - state.ambientPhase) * 0.03;
 
-      playBtn.classList.toggle("playing", !paused);
-      logo.classList.toggle("playing", !paused);
+      const genre = getCurrentGenre();
+      const [c1, c2] = getGenreColors(genre?.id);
+      const t = timestamp * 0.001;
+
+      ctx.clearRect(0, 0, width, height);
+
+      const topGlow = ctx.createRadialGradient(width * .5, height * .24, 0, width * .5, height * .24, Math.min(width, height) * .42);
+      topGlow.addColorStop(0, `rgba(${c1}, ${0.05 + state.ambientPhase * 0.11})`);
+      topGlow.addColorStop(.45, `rgba(${c1}, ${0.02 + state.ambientPhase * 0.04})`);
+      topGlow.addColorStop(1, `rgba(${c1}, 0)`);
+      ctx.fillStyle = topGlow;
+      ctx.fillRect(0, 0, width, height);
+
+      const bottomGlow = ctx.createRadialGradient(width * .78, height * .76, 0, width * .78, height * .76, Math.min(width, height) * .42);
+      bottomGlow.addColorStop(0, `rgba(${c2}, ${0.05 + state.ambientPhase * 0.12})`);
+      bottomGlow.addColorStop(.45, `rgba(${c2}, ${0.02 + state.ambientPhase * 0.04})`);
+      bottomGlow.addColorStop(1, `rgba(${c2}, 0)`);
+      ctx.fillStyle = bottomGlow;
+      ctx.fillRect(0, 0, width, height);
+
+      const lineY = height * .52;
+      const beam = ctx.createLinearGradient(width * .2, lineY, width * .8, lineY);
+      beam.addColorStop(0, `rgba(${c1}, 0)`);
+      beam.addColorStop(.5, `rgba(255,255,255, ${0.04 + state.ambientPhase * 0.14})`);
+      beam.addColorStop(1, `rgba(${c2}, 0)`);
+      ctx.fillStyle = beam;
+      ctx.fillRect(width * .2, lineY, width * .6, 1);
+
+      for (const particle of particles){
+        const x = particle.x * width + Math.sin(t * particle.speed + particle.y * 8) * 10;
+        const y = particle.y * height + Math.cos(t * particle.speed + particle.x * 7) * 10;
+        ctx.beginPath();
+        ctx.arc(x, y, particle.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255, ${particle.alpha * (1 + state.ambientPhase * 1.3)})`;
+        ctx.fill();
+      }
+
+      requestAnimationFrame(drawAmbientFrame);
     }
 
-    function showToast(text){
-      clearTimeout(toastTimer);
-      toastEl.textContent = text;
-      toastEl.classList.add("show");
-      toastTimer = setTimeout(() => {
-        toastEl.classList.remove("show");
-      }, 1400);
+    async function fileExists(url){
+      if (location.protocol === 'file:') return true;
+
+      try{
+        const headResponse = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+        if (headResponse.ok) return true;
+      }catch(error){}
+
+      try{
+        const rangeResponse = await fetch(url, {
+          method: 'GET',
+          headers: { Range: 'bytes=0-0' },
+          cache: 'no-store'
+        });
+        return rangeResponse.ok || rangeResponse.status === 206;
+      }catch(error){
+        return false;
+      }
     }
 
-    function openSheet(){
-      sheetOpen = true;
-      sheet.classList.add("open");
-      sheetBackdrop.classList.add("open");
-      sheet.setAttribute("aria-hidden", "false");
+    async function discoverTracks(genre){
+      const tracks = [];
+
+      for (let index = 1; index <= genre.maxFiles; index += 1){
+        const src = `./${genre.prefix}-${index}.mp3`;
+        const exists = await fileExists(src);
+
+        if (!exists){
+          if (location.protocol !== 'file:') break;
+          continue;
+        }
+
+        tracks.push({
+          src,
+          title: prettifyFilename(src, index - 1)
+        });
+      }
+
+      return tracks;
+    }
+
+    async function ensureGenreTracks(genre){
+      const cached = state.discoveryCache.get(genre.id);
+      if (cached){
+        return cached instanceof Promise ? cached : Promise.resolve(cached);
+      }
+
+      const discoveryPromise = discoverTracks(genre)
+        .then((tracks) => {
+          state.discoveryCache.set(genre.id, tracks);
+          return tracks;
+        })
+        .catch((error) => {
+          state.discoveryCache.delete(genre.id);
+          throw error;
+        });
+
+      state.discoveryCache.set(genre.id, discoveryPromise);
+      return discoveryPromise;
+    }
+
+    function updateButtonsState(){
+      const hasTracks = state.currentTracks.length > 0;
+      playBtn.disabled = !hasTracks;
+      prevBtn.disabled = !hasTracks;
+      nextBtn.disabled = !hasTracks;
+      queueBtn.disabled = !hasTracks;
+      progressEl.disabled = !hasTracks || !Number.isFinite(audio.duration) || audio.duration <= 0;
+    }
+
+    function updateProgressUI(){
+      const hasDuration = Number.isFinite(audio.duration) && audio.duration > 0;
+      const currentTime = hasDuration ? audio.currentTime : 0;
+      const ratio = hasDuration ? clamp(currentTime / audio.duration, 0, 1) : 0;
+      const value = Math.round(ratio * 1000);
+
+      progressEl.value = String(value);
+      progressEl.style.setProperty('--progress', `${ratio * 100}%`);
+      currentTimeEl.textContent = formatTime(currentTime);
+      durationTimeEl.textContent = formatTime(hasDuration ? audio.duration : 0);
+      progressEl.disabled = !state.currentTracks.length || !hasDuration;
+    }
+
+    function updateNowPlayingUI(){
+      const genre = getCurrentGenre();
+      const track = getCurrentTrack();
+      const hasTracks = state.currentTracks.length > 0;
+
+      genreLabelEl.textContent = genre?.name || APP_NAME;
+      trackTitleEl.textContent = track?.title || `${genre?.name || APP_NAME}`;
+      trackPositionEl.textContent = hasTracks ? `${state.currentTrackIndex + 1} / ${state.currentTracks.length}` : '0 / 0';
+      sheetTitleEl.textContent = genre?.name || 'Треки';
+      sheetMetaEl.textContent = hasTracks ? `${state.currentTracks.length} треков` : 'Нет треков';
+
+      updateButtonsState();
+      updateProgressUI();
       renderTrackList();
     }
 
-    function closeSheet(){
-      sheetOpen = false;
-      sheet.classList.remove("open");
-      sheetBackdrop.classList.remove("open");
-      sheet.setAttribute("aria-hidden", "true");
+    function scrollActiveTrackIntoView(){
+      const activeItem = trackListEl.querySelector('.track-item.active');
+      if (!activeItem) return;
+      activeItem.scrollIntoView({ block: 'nearest' });
     }
 
-    sheetBackdrop.addEventListener("click", closeSheet);
-    queueTrigger.addEventListener("click", () => {
-      if (sheetOpen) closeSheet();
-      else openSheet();
-    });
-
     function renderGenres(){
-      genresEl.innerHTML = "";
+      genresEl.innerHTML = '';
 
-      GENRES.forEach((genre) => {
-        const button = document.createElement("button");
-        button.className = "genre";
-        button.dataset.genreId = genre.id;
+      GENRES.forEach((genre, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'genre-btn';
         button.textContent = genre.name;
+        button.setAttribute('aria-pressed', String(index === state.currentGenreIndex));
 
-        if (genre.id === currentGenre.id) button.classList.add("active");
+        if (index === state.currentGenreIndex) {
+          button.classList.add('active');
+        }
 
-        button.addEventListener("click", async () => {
-          await selectGenre(genre, true);
+        button.addEventListener('click', async () => {
+          await selectGenre(index, { autoplay: true, preferRememberedTrack: true });
         });
 
         genresEl.appendChild(button);
       });
     }
 
-    function escapeHtml(text){
-      return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function stripExtension(name){
-      return name.replace(/\.[^/.]+$/, "");
-    }
-
-    function buildTrackTitle(genre, index, url){
-      if (genre.mode === "stream") return genre.name;
-
-      try{
-        const fileName = decodeURIComponent(url.split("/").pop() || "");
-        const clean = stripExtension(fileName);
-        if (clean) return clean.replace(/[-_]+/g, " ");
-      }catch(e){}
-
-      return `${genre.name} ${index + 1}`;
-    }
-
-    function updateNowPlayingUI(){
-      trackTitleEl.style.opacity = ".72";
-      trackTitleEl.style.transform = "translateY(2px)";
-
-      requestAnimationFrame(() => {
-        trackTitleEl.textContent = currentTrackTitle;
-        trackTitleEl.style.opacity = "1";
-        trackTitleEl.style.transform = "translateY(0)";
-      });
-
-      if (currentGenre.mode === "local-list" && currentTrackList.length){
-        trackCounterEl.textContent = `${currentLocalIndex + 1} / ${currentTrackList.length}`;
-      } else if (currentGenre.mode === "stream"){
-        trackCounterEl.textContent = "Поток";
-      } else {
-        trackCounterEl.textContent = "—";
-      }
-
-      sheetTitle.textContent = currentGenre.name;
-      sheetMeta.textContent = currentGenre.mode === "local-list"
-        ? `${currentTrackList.length} треков`
-        : "Онлайн-поток";
-    }
-
     function renderTrackList(){
-      trackListEl.innerHTML = "";
+      trackListEl.innerHTML = '';
 
-      if (currentGenre.mode !== "local-list"){
-        const item = document.createElement("div");
-        item.style.padding = "18px 14px 22px";
-        item.style.color = "rgba(255,255,255,.42)";
-        item.style.fontSize = "14px";
-        item.textContent = "Для этого жанра используется онлайн-поток.";
-        trackListEl.appendChild(item);
+      if (!state.currentTracks.length){
+        const empty = document.createElement('div');
+        empty.className = 'empty-state';
+        empty.textContent = 'В этом жанре не найдено ни одного MP3-файла. Проверь, что файлы лежат рядом с HTML и называются вроде jazz-1.mp3, jazz-2.mp3.';
+        trackListEl.appendChild(empty);
         return;
       }
 
-      currentTrackList.forEach((url, index) => {
-        const item = document.createElement("button");
-        item.className = "track-item";
-        if (index === currentLocalIndex) item.classList.add("active");
+      state.currentTracks.forEach((track, index) => {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'track-item';
+        item.dataset.index = String(index);
+        item.setAttribute('aria-label', `Выбрать трек ${track.title}`);
 
-        const visibleName = buildTrackTitle(currentGenre, index, url);
+        if (index === state.currentTrackIndex){
+          item.classList.add('active');
+        }
 
         item.innerHTML = `
-          <span class="track-item-main">
-            <span class="track-index">${String(index + 1).padStart(2, "0")}</span>
-            <span class="track-name">${escapeHtml(visibleName)}</span>
+          <span class="track-main">
+            <span class="track-number">${String(index + 1).padStart(2, '0')}</span>
+            <span class="track-copy">
+              <span class="track-name">${escapeHtml(track.title)}</span>
+              <span class="track-sub">${escapeHtml(getCurrentGenre().name)}</span>
+            </span>
           </span>
-          <span class="track-item-meta">
-            ${index === currentLocalIndex ? '<span class="playing-pill"></span>' : ''}
-          </span>
+          <span class="track-indicator" aria-hidden="true"></span>
         `;
 
-        item.addEventListener("click", async () => {
-          currentLocalIndex = index;
-          await loadCurrentLocalTrack(true);
-          closeSheet();
+        item.addEventListener('click', async () => {
+          await selectTrack(index, { autoplay: true, closeAfter: true });
         });
 
         trackListEl.appendChild(item);
       });
     }
 
-    async function fileExists(url){
-      if (location.protocol === "file:") return true;
-
+    function persistState(){
       try{
-        const head = await fetch(url, { method: "HEAD", cache: "no-store" });
-        if (head.ok) return true;
-      }catch(e){}
-
-      try{
-        const range = await fetch(url, {
-          method: "GET",
-          headers: { Range: "bytes=0-0" },
-          cache: "no-store"
-        });
-        return range.ok || range.status === 206;
-      }catch(e){
-        return false;
-      }
+        const payload = {
+          genreId: getCurrentGenre()?.id || GENRES[0].id,
+          lastIndexByGenre: state.lastIndexByGenre
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      }catch(error){}
     }
 
-    async function getLocalTracksForGenre(genre){
-      if (localTrackCache[genre.id]) return localTrackCache[genre.id];
+    function restoreState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
 
-      const tracks = [];
+        const saved = JSON.parse(raw);
+        const restoredGenreIndex = GENRES.findIndex((genre) => genre.id === saved.genreId);
 
-      for (let i = 1; i <= genre.maxFiles; i++){
-        const url = `./${genre.prefix}-${i}.mp3`;
-        const exists = await fileExists(url);
-
-        if (exists) {
-          tracks.push(url);
-        } else if (location.protocol !== "file:") {
-          break;
-        }
-      }
-
-      localTrackCache[genre.id] = tracks;
-      return tracks;
-    }
-
-    async function selectGenre(genre, autoplay = true){
-      currentGenre = genre;
-      renderGenres();
-      closeSheet();
-
-      if (genre.mode === "local-list"){
-        currentTrackList = await getLocalTracksForGenre(genre);
-
-        if (!currentTrackList.length){
-          currentTrackTitle = genre.name;
-          updateNowPlayingUI();
-          trackTimeEl.textContent = "Нет файлов";
-          audio.pause();
-          audio.removeAttribute("src");
-          audio.load();
-          setPlayIcon(true);
-          renderTrackList();
-          showToast("Файлы не найдены");
-          return;
+        if (restoredGenreIndex >= 0){
+          state.currentGenreIndex = restoredGenreIndex;
         }
 
-        currentLocalIndex = 0;
-        await loadCurrentLocalTrack(autoplay);
-        return;
-      }
-
-      currentTrackList = [];
-      currentStreamIndex = 0;
-      audio.src = genre.urls[currentStreamIndex];
-      currentTrackTitle = genre.name;
-      audio.load();
-
-      updateNowPlayingUI();
-      renderTrackList();
-
-      if (autoplay) await safePlay();
-      updateMediaSession();
-    }
-
-    async function loadCurrentLocalTrack(autoplay = true){
-      if (!currentTrackList.length) return;
-
-      const url = currentTrackList[currentLocalIndex];
-      audio.src = url;
-      currentTrackTitle = buildTrackTitle(currentGenre, currentLocalIndex, url);
-      audio.load();
-
-      updateNowPlayingUI();
-      renderTrackList();
-
-      if (autoplay) await safePlay();
-      updateMediaSession();
-    }
-
-    async function nextTrack(){
-      if (!currentGenre) return;
-
-      if (currentGenre.mode === "local-list"){
-        if (!currentTrackList.length) return;
-        currentLocalIndex = (currentLocalIndex + 1) % currentTrackList.length;
-        await loadCurrentLocalTrack(true);
-        return;
-      }
-
-      currentStreamIndex += 1;
-      if (currentStreamIndex >= currentGenre.urls.length) currentStreamIndex = 0;
-      audio.src = currentGenre.urls[currentStreamIndex];
-      currentTrackTitle = currentGenre.name;
-      audio.load();
-      updateNowPlayingUI();
-      await safePlay();
-      updateMediaSession();
-    }
-
-    async function prevTrack(){
-      if (!currentGenre) return;
-
-      if (currentGenre.mode === "local-list"){
-        if (!currentTrackList.length) return;
-        currentLocalIndex = (currentLocalIndex - 1 + currentTrackList.length) % currentTrackList.length;
-        await loadCurrentLocalTrack(true);
-        return;
-      }
-
-      currentStreamIndex -= 1;
-      if (currentStreamIndex < 0) currentStreamIndex = currentGenre.urls.length - 1;
-      audio.src = currentGenre.urls[currentStreamIndex];
-      currentTrackTitle = currentGenre.name;
-      audio.load();
-      updateNowPlayingUI();
-      await safePlay();
-      updateMediaSession();
-    }
-
-    async function retryStream(){
-      if (!currentGenre || currentGenre.mode !== "stream") return;
-      currentStreamIndex += 1;
-      if (currentStreamIndex >= currentGenre.urls.length) currentStreamIndex = 0;
-      audio.src = currentGenre.urls[currentStreamIndex];
-      audio.load();
-      currentTrackTitle = currentGenre.name;
-      updateNowPlayingUI();
-      await safePlay();
-      updateMediaSession();
-    }
-
-    async function togglePlayback(){
-      if (!audio.src){
-        await selectGenre(currentGenre || GENRES[0], true);
-        return;
-      }
-
-      if (audio.paused) await safePlay();
-      else audio.pause();
-    }
-
-    async function ensurePlaybackHints(){
-      try{
-        if ("audioSession" in navigator && navigator.audioSession){
-          navigator.audioSession.type = "playback";
+        if (saved && typeof saved.lastIndexByGenre === 'object' && saved.lastIndexByGenre){
+          state.lastIndexByGenre = saved.lastIndexByGenre;
         }
-      }catch(e){}
+      }catch(error){}
     }
 
-    async function safePlay(){
-      try{
-        await ensurePlaybackHints();
-        await audio.play();
-      }catch(e){}
+    function updateMediaSession(){
+      if (!('mediaSession' in navigator)) return;
+
+      const genre = getCurrentGenre();
+      const track = getCurrentTrack();
+      const artwork = createArtworkDataUrl(genre?.name || APP_NAME);
+
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: track?.title || APP_NAME,
+        artist: genre?.name || APP_NAME,
+        album: APP_NAME,
+        artwork: [{ src: artwork, sizes: '512x512', type: 'image/svg+xml' }]
+      });
+
+      try{ navigator.mediaSession.setActionHandler('play', async () => { await safePlay(); }); }catch(error){}
+      try{ navigator.mediaSession.setActionHandler('pause', () => { audio.pause(); }); }catch(error){}
+      try{ navigator.mediaSession.setActionHandler('nexttrack', async () => { await playNext(); }); }catch(error){}
+      try{ navigator.mediaSession.setActionHandler('previoustrack', async () => { await playPrev(); }); }catch(error){}
+
+      navigator.mediaSession.playbackState = audio.paused ? 'paused' : 'playing';
     }
 
-    function formatTime(seconds){
-      if (!Number.isFinite(seconds) || seconds < 0) return "00:00";
-      const m = Math.floor(seconds / 60);
-      const s = Math.floor(seconds % 60);
-      return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-    }
-
-    function updateTime(){
-      if (currentGenre.mode === "stream"){
-        trackTimeEl.textContent = audio.paused ? "Пауза" : "Эфир";
-        return;
-      }
-      trackTimeEl.textContent = formatTime(audio.currentTime || 0);
-    }
-
-    function createArtworkDataURL(text){
-      const safe = String(text || APP_NAME).slice(0, 24);
-      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+    function createArtworkDataUrl(label){
+      const safeLabel = String(label || APP_NAME).slice(0, 18);
+      return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(`
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <rect width="512" height="512" rx="96" fill="#000"/>
-          <text x="256" y="270" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="42" letter-spacing="10">${safe}</text>
+          <rect width="512" height="512" rx="110" fill="#050505"/>
+          <text x="256" y="280" fill="white" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="56" letter-spacing="10">${safeLabel}</text>
         </svg>
       `);
     }
 
-    function updateMediaSession(){
-      if (!("mediaSession" in navigator)) return;
-
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: currentTrackTitle || currentGenre?.name || APP_NAME,
-        artist: currentGenre?.name || APP_NAME,
-        album: APP_NAME,
-        artwork: [{
-          src: createArtworkDataURL(currentGenre?.name || APP_NAME),
-          sizes: "512x512",
-          type: "image/svg+xml"
-        }]
-      });
-
-      navigator.mediaSession.setActionHandler("play", async () => { await safePlay(); });
-      navigator.mediaSession.setActionHandler("pause", () => audio.pause());
+    async function safePlay(){
+      try{
+        if ('audioSession' in navigator && navigator.audioSession){
+          navigator.audioSession.type = 'playback';
+        }
+      }catch(error){}
 
       try{
-        navigator.mediaSession.setActionHandler("nexttrack", async () => { await nextTrack(); });
-      }catch(e){}
+        await audio.play();
+        return true;
+      }catch(error){
+        setStatus('Нажми ещё раз для старта');
+        showToast('Браузер пока не дал запустить звук');
+        return false;
+      }
+    }
+
+    async function loadTrack(index, { autoplay = true } = {}){
+      if (!state.currentTracks.length) return;
+
+      state.currentTrackIndex = clamp(index, 0, state.currentTracks.length - 1);
+      const genre = getCurrentGenre();
+      const track = getCurrentTrack();
+
+      if (!track) return;
+
+      state.lastIndexByGenre[genre.id] = state.currentTrackIndex;
+      persistState();
+
+      trackTitleEl.textContent = track.title;
+      trackPositionEl.textContent = `${state.currentTrackIndex + 1} / ${state.currentTracks.length}`;
+      currentTimeEl.textContent = '00:00';
+      durationTimeEl.textContent = '00:00';
+      progressEl.value = '0';
+      progressEl.style.setProperty('--progress', '0%');
+      setStatus('Загрузка…');
+
+      audio.src = track.src;
+      audio.load();
+
+      updateNowPlayingUI();
+      updateMediaSession();
+
+      if (autoplay){
+        await safePlay();
+      } else {
+        setPlayButton(true);
+      }
+    }
+
+    async function selectTrack(index, { autoplay = true, closeAfter = false } = {}){
+      await loadTrack(index, { autoplay });
+      if (closeAfter) closeSheet();
+    }
+
+    async function selectGenre(index, { autoplay = true, preferRememberedTrack = true } = {}){
+      const genre = GENRES[index];
+      if (!genre) return;
+
+      const token = ++state.selectionToken;
+      closeSheet();
+      audio.pause();
+      state.currentGenreIndex = index;
+      state.currentTracks = [];
+      state.currentTrackIndex = 0;
+      trackTitleEl.textContent = `${genre.name}`;
+      setStatus('Загрузка библиотеки…');
+
+      renderGenres();
+      updateNowPlayingUI();
 
       try{
-        navigator.mediaSession.setActionHandler("previoustrack", async () => { await prevTrack(); });
-      }catch(e){}
+        const tracks = await ensureGenreTracks(genre);
+        if (token !== state.selectionToken) return;
 
-      updateMediaSessionPlayback();
-    }
+        state.currentTracks = tracks;
 
-    function updateMediaSessionPlayback(){
-      if ("mediaSession" in navigator) {
-        navigator.mediaSession.playbackState = audio.paused ? "paused" : "playing";
-      }
-    }
-
-    playBtn.addEventListener("click", togglePlayback);
-    prevBtn.addEventListener("click", prevTrack);
-    nextBtn.addEventListener("click", nextTrack);
-
-    audio.addEventListener("play", () => {
-      setPlayIcon(false);
-      updateMediaSessionPlayback();
-    });
-
-    audio.addEventListener("pause", () => {
-      setPlayIcon(true);
-      updateMediaSessionPlayback();
-    });
-
-    audio.addEventListener("ended", async () => {
-      if (currentGenre?.mode === "local-list") {
-        await nextTrack();
-      }
-    });
-
-    audio.addEventListener("error", async () => {
-      if (currentGenre?.mode === "local-list") {
-        await nextTrack();
-      } else if (currentGenre?.mode === "stream") {
-        await retryStream();
-      }
-    });
-
-    audio.addEventListener("loadedmetadata", updateTime);
-    audio.addEventListener("timeupdate", updateTime);
-
-    function resizeCanvas(){
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.floor(innerWidth * dpr);
-      canvas.height = Math.floor(innerHeight * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-
-    function getEnergy(){
-      const t = performance.now() * 0.001;
-      const boost = !audio.paused && audio.src ? .14 : 0;
-      fakeEnergy += (((0.02 + Math.sin(t * 1.5) * 0.012) + boost) - fakeEnergy) * 0.05;
-      return Math.max(0.02, fakeEnergy);
-    }
-
-    function updateQuietPulse(time){
-      const t = time * 0.001;
-      const e = getEnergy();
-
-      if (audio.paused || !audio.src){
-        [dot1, dot2, dot3].forEach((d) => {
-          d.classList.remove("live");
-          d.style.transform = "scale(1)";
-          d.style.opacity = ".42";
-        });
-        return;
-      }
-
-      const a = 0.92 + Math.sin(t * 2.4) * 0.10 + e * 0.12;
-      const b = 1.06 + Math.sin(t * 2.4 + 0.7) * 0.12 + e * 0.16;
-      const c = 0.92 + Math.sin(t * 2.4 + 1.4) * 0.10 + e * 0.12;
-
-      dot1.classList.add("live");
-      dot2.classList.add("live");
-      dot3.classList.add("live");
-
-      dot1.style.transform = `scale(${a})`;
-      dot2.style.transform = `scale(${b})`;
-      dot3.style.transform = `scale(${c})`;
-
-      dot1.style.opacity = String(0.42 + e * 0.8);
-      dot2.style.opacity = String(0.52 + e * 0.9);
-      dot3.style.opacity = String(0.42 + e * 0.8);
-    }
-
-    function drawBackground(time){
-      const t = time * 0.001;
-      const w = innerWidth;
-      const h = innerHeight;
-
-      ctx.clearRect(0, 0, w, h);
-
-      const e = getEnergy();
-      bgPulse += ((0.12 + e * 0.7) - bgPulse) * 0.05;
-
-      const activeId = currentGenre?.id || "lofi";
-      let c1 = "120,205,255";
-      let c2 = "255,156,125";
-
-      if (activeId === "rap"){
-        c1 = "210,210,210";
-        c2 = "120,120,120";
-      } else if (activeId === "jazz"){
-        c1 = "255,205,130";
-        c2 = "255,130,165";
-      } else if (activeId === "chill"){
-        c1 = "150,170,255";
-        c2 = "140,255,225";
-      }
-
-      const topGlow = ctx.createRadialGradient(w * .5, h * .22, 0, w * .5, h * .22, Math.min(w, h) * .36);
-      topGlow.addColorStop(0, `rgba(${c1},${0.04 + bgPulse * 0.05})`);
-      topGlow.addColorStop(.45, `rgba(${c1},${0.015 + bgPulse * 0.02})`);
-      topGlow.addColorStop(1, `rgba(${c1},0)`);
-      ctx.fillStyle = topGlow;
-      ctx.fillRect(0, 0, w, h);
-
-      const bottomGlow = ctx.createRadialGradient(w * .78, h * .74, 0, w * .78, h * .74, Math.min(w, h) * .40);
-      bottomGlow.addColorStop(0, `rgba(${c2},${0.04 + bgPulse * 0.06})`);
-      bottomGlow.addColorStop(.4, `rgba(${c2},${0.015 + bgPulse * 0.02})`);
-      bottomGlow.addColorStop(1, `rgba(${c2},0)`);
-      ctx.fillStyle = bottomGlow;
-      ctx.fillRect(0, 0, w, h);
-
-      const lineY = h * .50;
-      const line = ctx.createLinearGradient(w * .24, lineY, w * .76, lineY);
-      line.addColorStop(0, `rgba(${c1},0)`);
-      line.addColorStop(.5, `rgba(255,255,255,${0.05 + e * 0.08})`);
-      line.addColorStop(1, `rgba(${c2},0)`);
-      ctx.fillStyle = line;
-      ctx.fillRect(w * .24, lineY - .5, w * .52, 1);
-
-      for (const p of particles){
-        const x = p.x * w + Math.sin(t * p.drift + p.y * 8) * 8;
-        const y = p.y * h + Math.cos(t * p.drift + p.x * 7) * 8;
-
-        ctx.beginPath();
-        ctx.arc(x, y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${p.a * (0.9 + bgPulse * 1.1)})`;
-        ctx.fill();
-      }
-
-      updateQuietPulse(time);
-      requestAnimationFrame(drawBackground);
-    }
-
-    function setupGestures(){
-      gestureLayer.addEventListener("touchstart", (e) => {
-        const t = e.touches[0];
-        touchStartX = t.clientX;
-        touchStartY = t.clientY;
-        touchStartTime = Date.now();
-      }, { passive:true });
-
-      gestureLayer.addEventListener("touchend", async (e) => {
-        const t = e.changedTouches[0];
-        const dx = t.clientX - touchStartX;
-        const dy = t.clientY - touchStartY;
-        const dt = Date.now() - touchStartTime;
-
-        if (dt > 700) return;
-
-        const absX = Math.abs(dx);
-        const absY = Math.abs(dy);
-
-        if (absX < 20 && absY < 20) return;
-
-        if (absX > absY && absX > 48){
-          if (dx < 0) await nextTrack();
-          else await prevTrack();
+        if (!tracks.length){
+          audio.pause();
+          audio.removeAttribute('src');
+          audio.load();
+          setPlayButton(true);
+          setStatus('Нет треков');
+          updateNowPlayingUI();
+          showToast(`В жанре ${genre.name} нет файлов`);
           return;
         }
 
-        if (absY > absX && absY > 58){
-          if (dy < 0) openSheet();
-          else closeSheet();
-        }
-      }, { passive:true });
+        const rememberedIndex = preferRememberedTrack ? state.lastIndexByGenre[genre.id] : 0;
+        const targetIndex = Number.isInteger(rememberedIndex)
+          ? clamp(rememberedIndex, 0, tracks.length - 1)
+          : 0;
 
-      window.addEventListener("keydown", async (e) => {
-        if (e.key === "ArrowRight") await nextTrack();
-        if (e.key === "ArrowLeft") await prevTrack();
-        if (e.key === " "){
-          e.preventDefault();
+        await loadTrack(targetIndex, { autoplay });
+      }catch(error){
+        if (token !== state.selectionToken) return;
+        audio.pause();
+        audio.removeAttribute('src');
+        audio.load();
+        state.currentTracks = [];
+        state.currentTrackIndex = 0;
+        setPlayButton(true);
+        setStatus('Ошибка библиотеки');
+        updateNowPlayingUI();
+        showToast('Не удалось прочитать файлы этого жанра');
+      }
+    }
+
+    async function togglePlayback(){
+      if (!state.currentTracks.length){
+        await selectGenre(state.currentGenreIndex, { autoplay: true, preferRememberedTrack: true });
+        return;
+      }
+
+      if (audio.paused){
+        await safePlay();
+      } else {
+        audio.pause();
+      }
+    }
+
+    async function playNext(){
+      if (!state.currentTracks.length) return;
+      const nextIndex = (state.currentTrackIndex + 1) % state.currentTracks.length;
+      await loadTrack(nextIndex, { autoplay: true });
+    }
+
+    async function playPrev(){
+      if (!state.currentTracks.length) return;
+      const prevIndex = (state.currentTrackIndex - 1 + state.currentTracks.length) % state.currentTracks.length;
+      await loadTrack(prevIndex, { autoplay: true });
+    }
+
+    function openSheet(){
+      if (!state.currentTracks.length) return;
+      state.sheetOpen = true;
+      sheetEl.classList.add('open');
+      sheetBackdropEl.classList.add('open');
+      sheetEl.setAttribute('aria-hidden', 'false');
+      queueBtn.setAttribute('aria-expanded', 'true');
+      renderTrackList();
+      requestAnimationFrame(scrollActiveTrackIntoView);
+    }
+
+    function closeSheet(){
+      state.sheetOpen = false;
+      sheetEl.classList.remove('open');
+      sheetBackdropEl.classList.remove('open');
+      sheetEl.style.removeProperty('transform');
+      sheetEl.setAttribute('aria-hidden', 'true');
+      queueBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    function setupSheetInteractions(){
+      queueBtn.addEventListener('click', () => {
+        if (state.sheetOpen) closeSheet();
+        else openSheet();
+      });
+
+      sheetBackdropEl.addEventListener('click', closeSheet);
+
+      const onPointerMove = (event) => {
+        if (!state.sheetDrag) return;
+        const delta = Math.max(0, event.clientY - state.sheetDrag.startY);
+        sheetEl.style.transition = 'none';
+        sheetEl.style.transform = `translateY(${delta}px)`;
+        state.sheetDrag.delta = delta;
+      };
+
+      const onPointerUp = () => {
+        if (!state.sheetDrag) return;
+
+        const delta = state.sheetDrag.delta;
+        state.sheetDrag = null;
+        sheetEl.style.removeProperty('transition');
+
+        if (delta > 120){
+          closeSheet();
+        } else {
+          sheetEl.style.transform = 'translateY(0)';
+          requestAnimationFrame(() => {
+            if (state.sheetOpen) sheetEl.style.removeProperty('transform');
+          });
+        }
+
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
+      };
+
+      sheetHandleEl.addEventListener('pointerdown', (event) => {
+        if (!state.sheetOpen) return;
+        state.sheetDrag = { startY: event.clientY, delta: 0 };
+        window.addEventListener('pointermove', onPointerMove);
+        window.addEventListener('pointerup', onPointerUp);
+        window.addEventListener('pointercancel', onPointerUp);
+      });
+    }
+
+    function setupProgressInteractions(){
+      progressEl.addEventListener('input', () => {
+        const hasDuration = Number.isFinite(audio.duration) && audio.duration > 0;
+        if (!hasDuration) return;
+
+        const ratio = Number(progressEl.value) / 1000;
+        const nextTime = audio.duration * ratio;
+        currentTimeEl.textContent = formatTime(nextTime);
+        progressEl.style.setProperty('--progress', `${ratio * 100}%`);
+      });
+
+      progressEl.addEventListener('pointerdown', () => {
+        if (audio.paused) {
+          state.seekWasPlaying = false;
+          return;
+        }
+        state.seekWasPlaying = true;
+        audio.pause();
+      });
+
+      progressEl.addEventListener('change', async () => {
+        const hasDuration = Number.isFinite(audio.duration) && audio.duration > 0;
+        if (!hasDuration) return;
+
+        const ratio = Number(progressEl.value) / 1000;
+        audio.currentTime = audio.duration * ratio;
+        updateProgressUI();
+
+        if (state.seekWasPlaying){
+          state.seekWasPlaying = false;
+          await safePlay();
+        }
+      });
+    }
+
+    function setupKeyboard(){
+      window.addEventListener('keydown', async (event) => {
+        if (event.key === ' '){
+          event.preventDefault();
           await togglePlayback();
         }
-        if (e.key === "Escape") closeSheet();
+        if (event.key === 'ArrowRight') await playNext();
+        if (event.key === 'ArrowLeft') await playPrev();
+        if (event.key === 'Escape') closeSheet();
       });
     }
 
-    function initWarmup(){
-      ["touchstart", "click"].forEach((evt) => {
-        window.addEventListener(evt, async () => {
-          await ensurePlaybackHints();
-        }, { once:true, passive:true });
+    function attachAudioEvents(){
+      audio.addEventListener('loadstart', () => {
+        setStatus('Загрузка…');
+        updateProgressUI();
+      });
+
+      audio.addEventListener('loadedmetadata', () => {
+        updateProgressUI();
+        setStatus(audio.paused ? 'Готово' : 'Играет');
+      });
+
+      audio.addEventListener('canplay', () => {
+        setStatus(audio.paused ? 'Готово' : 'Играет');
+      });
+
+      audio.addEventListener('waiting', () => {
+        setStatus('Буферизация…');
+      });
+
+      audio.addEventListener('playing', () => {
+        setPlayButton(false);
+        setStatus('Играет');
+        updateMediaSession();
+        renderTrackList();
+      });
+
+      audio.addEventListener('pause', () => {
+        setPlayButton(true);
+        if (audio.src) setStatus('Пауза');
+        updateMediaSession();
+        renderTrackList();
+      });
+
+      audio.addEventListener('timeupdate', updateProgressUI);
+
+      audio.addEventListener('ended', async () => {
+        await playNext();
+      });
+
+      audio.addEventListener('error', async () => {
+        showToast('Не удалось загрузить трек');
+        setStatus('Ошибка трека');
+
+        if (state.currentTracks.length > 1){
+          await playNext();
+        } else {
+          audio.pause();
+        }
       });
     }
 
-    function init(){
-      createManifestAndSW();
+    function attachControlEvents(){
+      playBtn.addEventListener('click', togglePlayback);
+      prevBtn.addEventListener('click', playPrev);
+      nextBtn.addEventListener('click', playNext);
+    }
+
+    async function init(){
+      restoreState();
+      resizeCanvas();
       renderGenres();
-      setPlayIcon(true);
+      setPlayButton(true);
+      setStatus('Подготовка');
       updateNowPlayingUI();
-      updateTime();
-      requestAnimationFrame(drawBackground);
-      setupGestures();
-      initWarmup();
-      selectGenre(currentGenre, false);
+      setupSheetInteractions();
+      setupProgressInteractions();
+      setupKeyboard();
+      attachControlEvents();
+      attachAudioEvents();
+      requestAnimationFrame(drawAmbientFrame);
+      window.addEventListener('resize', resizeCanvas);
+
+      await selectGenre(state.currentGenreIndex, { autoplay: false, preferRememberedTrack: true });
     }
 
     init();
