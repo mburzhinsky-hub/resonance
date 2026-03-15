@@ -2,10 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <title>RESONANCE</title>
 
   <meta name="theme-color" content="#000000" />
@@ -15,23 +12,17 @@
 
   <style>
     :root{
-      --bg:#000000;
-      --panel:rgba(255,255,255,.045);
+      --bg:#000;
+      --text:#fff;
+      --muted:rgba(255,255,255,.34);
+      --muted-2:rgba(255,255,255,.18);
+      --line:rgba(255,255,255,.08);
+      --line-2:rgba(255,255,255,.14);
+      --panel:rgba(255,255,255,.04);
       --panel-2:rgba(255,255,255,.06);
-      --line:rgba(255,255,255,.10);
-      --line-2:rgba(255,255,255,.16);
-      --text:#ffffff;
-      --muted:rgba(255,255,255,.42);
-      --muted-2:rgba(255,255,255,.24);
-      --accent:#7fd0ff;
-      --accent-soft:rgba(127,208,255,.18);
+      --accent:#bfe8ff;
       --safe-top:max(14px, env(safe-area-inset-top));
-      --safe-bottom:max(16px, env(safe-area-inset-bottom));
-      --radius-xl:28px;
-      --radius-lg:22px;
-      --radius-md:16px;
-      --shadow-soft:0 10px 40px rgba(0,0,0,.45);
-      --shadow-accent:0 0 28px rgba(127,208,255,.18);
+      --safe-bottom:max(18px, env(safe-area-inset-bottom));
     }
 
     *{
@@ -41,12 +32,12 @@
       -webkit-user-select:none;
     }
 
-    html, body{
+    html,body{
       width:100%;
       height:100%;
       margin:0;
       overflow:hidden;
-      background:var(--bg);
+      background:#000;
       color:var(--text);
       font-family:
         -apple-system,
@@ -54,14 +45,12 @@
         "SF Pro Display",
         "SF Pro Text",
         "Inter",
-        "Segoe UI",
-        Roboto,
-        Helvetica,
+        "Helvetica Neue",
         Arial,
         sans-serif;
-      text-rendering:optimizeLegibility;
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
+      text-rendering:optimizeLegibility;
     }
 
     body{
@@ -96,310 +85,12 @@
       height:100%;
       padding:
         calc(var(--safe-top) + 6px)
-        20px
-        calc(var(--safe-bottom) + 18px);
+        22px
+        calc(var(--safe-bottom) + 16px);
       display:flex;
       flex-direction:column;
       overflow:hidden;
       background:transparent;
-    }
-
-    .top{
-      flex:0 0 auto;
-      min-height:70px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      position:relative;
-      z-index:4;
-    }
-
-    .logo{
-      font-size:20px;
-      font-weight:300;
-      letter-spacing:.34em;
-      color:rgba(255,255,255,.82);
-      opacity:.92;
-      transition:opacity .25s ease, text-shadow .25s ease;
-      white-space:nowrap;
-    }
-
-    .logo.playing{
-      text-shadow:
-        0 0 18px rgba(255,255,255,.10),
-        0 0 32px rgba(127,208,255,.10);
-    }
-
-    .content{
-      flex:1;
-      min-height:0;
-      display:flex;
-      flex-direction:column;
-      align-items:stretch;
-      justify-content:space-between;
-      gap:18px;
-      position:relative;
-      z-index:4;
-      padding-top:8px;
-    }
-
-    .genres-wrap{
-      flex:0 0 auto;
-      display:flex;
-      justify-content:center;
-      margin-top:8px;
-    }
-
-    .genres{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      justify-content:flex-start;
-      max-width:100%;
-      overflow-x:auto;
-      scrollbar-width:none;
-      -ms-overflow-style:none;
-      padding:4px 2px 2px;
-      mask-image:linear-gradient(to right, transparent 0, black 14px, black calc(100% - 14px), transparent 100%);
-      -webkit-mask-image:linear-gradient(to right, transparent 0, black 14px, black calc(100% - 14px), transparent 100%);
-    }
-
-    .genres::-webkit-scrollbar{
-      display:none;
-    }
-
-    .genre{
-      border:none;
-      background:rgba(255,255,255,.035);
-      color:var(--muted);
-      border:1px solid rgba(255,255,255,.06);
-      border-radius:999px;
-      padding:11px 16px;
-      min-height:42px;
-      font-size:15px;
-      font-weight:500;
-      letter-spacing:-.01em;
-      cursor:pointer;
-      transition:
-        color .22s ease,
-        border-color .22s ease,
-        background .22s ease,
-        transform .15s ease,
-        box-shadow .22s ease;
-      white-space:nowrap;
-      backdrop-filter:blur(8px);
-      -webkit-backdrop-filter:blur(8px);
-    }
-
-    .genre:active{
-      transform:scale(.985);
-    }
-
-    .genre.active{
-      color:#fff;
-      background:rgba(255,255,255,.07);
-      border-color:rgba(127,208,255,.38);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.06),
-        0 0 0 1px rgba(127,208,255,.08),
-        0 0 24px rgba(127,208,255,.10);
-    }
-
-    .center{
-      flex:1 1 auto;
-      min-height:0;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      padding:8px 6px 0;
-      text-align:center;
-    }
-
-    .now-playing{
-      width:100%;
-      max-width:320px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:10px;
-    }
-
-    .track-meta-top{
-      font-size:12px;
-      letter-spacing:.18em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.34);
-    }
-
-    .track-title{
-      width:100%;
-      font-size:clamp(30px, 7.8vw, 48px);
-      line-height:.98;
-      font-weight:600;
-      letter-spacing:-.055em;
-      color:#fff;
-      transition:opacity .22s ease, transform .22s ease;
-      word-break:break-word;
-      text-wrap:balance;
-    }
-
-    .track-sub{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      min-height:22px;
-      color:rgba(255,255,255,.42);
-      font-size:14px;
-      font-weight:500;
-      letter-spacing:-.01em;
-    }
-
-    .dot-sep{
-      width:4px;
-      height:4px;
-      border-radius:50%;
-      background:rgba(255,255,255,.22);
-      flex:0 0 4px;
-    }
-
-    .micro-visual{
-      margin-top:18px;
-      width:min(240px, 70vw);
-      height:34px;
-      display:flex;
-      align-items:flex-end;
-      justify-content:center;
-      gap:5px;
-      pointer-events:none;
-      opacity:.96;
-    }
-
-    .micro-bar{
-      width:3px;
-      min-height:6px;
-      height:10px;
-      border-radius:999px;
-      background:linear-gradient(
-        to top,
-        rgba(255,255,255,.12),
-        rgba(255,255,255,.86)
-      );
-      box-shadow:0 0 12px rgba(127,208,255,.12);
-      transform-origin:center bottom;
-      transition:height .12s linear, opacity .12s linear, transform .12s linear;
-      opacity:.42;
-    }
-
-    .hint{
-      margin-top:18px;
-      font-size:12px;
-      color:rgba(255,255,255,.22);
-      letter-spacing:.02em;
-    }
-
-    .bottom{
-      flex:0 0 auto;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      gap:16px;
-      padding-bottom:2px;
-    }
-
-    .controls{
-      width:100%;
-      display:grid;
-      grid-template-columns:1fr auto 1fr;
-      align-items:center;
-      gap:14px;
-      max-width:320px;
-    }
-
-    .nav-btn{
-      border:none;
-      background:transparent;
-      color:rgba(255,255,255,.56);
-      width:52px;
-      height:52px;
-      display:grid;
-      place-items:center;
-      justify-self:center;
-      border-radius:50%;
-      cursor:pointer;
-      transition:
-        transform .15s ease,
-        color .2s ease,
-        background .2s ease;
-    }
-
-    .nav-btn:active{
-      transform:scale(.96);
-    }
-
-    .nav-btn:hover{
-      color:#fff;
-      background:rgba(255,255,255,.04);
-    }
-
-    .play-btn{
-      width:96px;
-      height:96px;
-      border-radius:50%;
-      border:1px solid rgba(255,255,255,.11);
-      background:
-        radial-gradient(circle at 50% 34%, rgba(255,255,255,.08), rgba(255,255,255,.02) 55%, rgba(255,255,255,.01)),
-        rgba(255,255,255,.02);
-      color:#fff;
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.08),
-        0 10px 30px rgba(0,0,0,.36),
-        0 0 0 1px rgba(255,255,255,.02);
-      transition:
-        transform .18s ease,
-        box-shadow .24s ease,
-        opacity .24s ease,
-        border-color .24s ease;
-      opacity:.94;
-      backdrop-filter:blur(14px);
-      -webkit-backdrop-filter:blur(14px);
-    }
-
-    .play-btn:active{
-      transform:scale(.97);
-    }
-
-    .play-btn.playing{
-      border-color:rgba(127,208,255,.20);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.10),
-        0 12px 34px rgba(0,0,0,.42),
-        0 0 26px rgba(127,208,255,.12);
-    }
-
-    .queue-trigger{
-      border:none;
-      background:transparent;
-      color:rgba(255,255,255,.48);
-      padding:8px 12px;
-      border-radius:999px;
-      font-size:13px;
-      font-weight:500;
-      cursor:pointer;
-      transition:background .2s ease, color .2s ease, transform .15s ease;
-    }
-
-    .queue-trigger:active{
-      transform:scale(.98);
-    }
-
-    .queue-trigger:hover{
-      background:rgba(255,255,255,.04);
-      color:#fff;
     }
 
     .gesture-layer{
@@ -409,14 +100,310 @@
       background:transparent;
     }
 
+    .top{
+      position:relative;
+      z-index:4;
+      min-height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+    }
+
+    .logo{
+      font-size:20px;
+      font-weight:300;
+      letter-spacing:.34em;
+      color:rgba(255,255,255,.84);
+      transition:opacity .24s ease, text-shadow .24s ease;
+      white-space:nowrap;
+    }
+
+    .logo.playing{
+      text-shadow:
+        0 0 16px rgba(255,255,255,.08),
+        0 0 30px rgba(160,220,255,.08);
+    }
+
+    .content{
+      position:relative;
+      z-index:4;
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .genres-wrap{
+      display:flex;
+      justify-content:center;
+      margin-top:8px;
+      flex:0 0 auto;
+    }
+
+    .genres{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      overflow-x:auto;
+      max-width:100%;
+      padding:4px 2px 4px;
+      scrollbar-width:none;
+      -ms-overflow-style:none;
+    }
+
+    .genres::-webkit-scrollbar{
+      display:none;
+    }
+
+    .genre{
+      border:none;
+      appearance:none;
+      background:rgba(255,255,255,.03);
+      color:rgba(255,255,255,.46);
+      border:1px solid rgba(255,255,255,.055);
+      border-radius:999px;
+      min-width:76px;
+      min-height:46px;
+      padding:0 18px;
+      font-size:15px;
+      font-weight:500;
+      letter-spacing:-.01em;
+      cursor:pointer;
+      transition:
+        color .2s ease,
+        background .2s ease,
+        border-color .2s ease,
+        box-shadow .2s ease,
+        transform .14s ease;
+      white-space:nowrap;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .genre:active{
+      transform:scale(.985);
+    }
+
+    .genre.active{
+      color:#fff;
+      background:rgba(255,255,255,.06);
+      border-color:rgba(255,255,255,.15);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05),
+        0 0 0 1px rgba(255,255,255,.02);
+    }
+
+    .center{
+      flex:1 1 auto;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:0 8px;
+    }
+
+    .now-playing{
+      width:100%;
+      max-width:320px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+
+    .track-title{
+      width:100%;
+      font-size:clamp(38px, 11vw, 58px);
+      line-height:.95;
+      font-weight:600;
+      letter-spacing:-.07em;
+      color:#fff;
+      word-break:break-word;
+      text-wrap:balance;
+      transition:opacity .2s ease, transform .2s ease;
+    }
+
+    .track-sub{
+      min-height:22px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      color:rgba(255,255,255,.34);
+      font-size:15px;
+      font-weight:500;
+      letter-spacing:-.01em;
+    }
+
+    .dot-sep{
+      width:4px;
+      height:4px;
+      border-radius:50%;
+      background:rgba(255,255,255,.18);
+      flex:0 0 4px;
+    }
+
+    .micro{
+      width:100%;
+      height:42px;
+      margin-top:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+    }
+
+    .micro-dots{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      min-width:54px;
+      height:18px;
+    }
+
+    .micro-dot{
+      width:5px;
+      height:5px;
+      border-radius:50%;
+      background:rgba(255,255,255,.20);
+      box-shadow:none;
+      opacity:.55;
+      transform:scale(1);
+      transition:
+        opacity .25s ease,
+        transform .25s ease,
+        background .25s ease,
+        box-shadow .25s ease;
+    }
+
+    .micro-dot.live{
+      background:rgba(255,255,255,.78);
+      box-shadow:0 0 12px rgba(180,225,255,.22);
+    }
+
+    .bottom{
+      flex:0 0 auto;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:14px;
+      padding-bottom:2px;
+    }
+
+    .controls{
+      width:100%;
+      max-width:320px;
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+      gap:12px;
+    }
+
+    .nav-btn{
+      width:52px;
+      height:52px;
+      border:none;
+      background:transparent;
+      color:rgba(255,255,255,.42);
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      transition:
+        transform .14s ease,
+        color .2s ease,
+        background .2s ease;
+      justify-self:center;
+      position:relative;
+      z-index:5;
+    }
+
+    .nav-btn:hover{
+      color:#fff;
+      background:rgba(255,255,255,.035);
+    }
+
+    .nav-btn:active{
+      transform:scale(.96);
+    }
+
+    .play-btn{
+      width:102px;
+      height:102px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(circle at 50% 34%, rgba(255,255,255,.07), rgba(255,255,255,.02) 55%, rgba(255,255,255,.01)),
+        rgba(255,255,255,.02);
+      color:#fff;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.07),
+        0 10px 30px rgba(0,0,0,.38);
+      transition:
+        transform .18s ease,
+        box-shadow .22s ease,
+        border-color .22s ease;
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      position:relative;
+      z-index:5;
+    }
+
+    .play-btn:active{
+      transform:scale(.97);
+    }
+
+    .play-btn.playing{
+      border-color:rgba(255,255,255,.14);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.09),
+        0 12px 34px rgba(0,0,0,.44),
+        0 0 20px rgba(170,225,255,.08);
+    }
+
+    .queue-trigger{
+      border:none;
+      background:transparent;
+      color:rgba(255,255,255,.42);
+      font-size:14px;
+      font-weight:500;
+      letter-spacing:-.01em;
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      transition:color .2s ease, background .2s ease, transform .14s ease;
+      position:relative;
+      z-index:5;
+    }
+
+    .queue-trigger:hover{
+      color:#fff;
+      background:rgba(255,255,255,.03);
+    }
+
+    .queue-trigger:active{
+      transform:scale(.985);
+    }
+
     .sheet-backdrop{
       position:fixed;
       inset:0;
+      z-index:20;
       background:rgba(0,0,0,.42);
       opacity:0;
       pointer-events:none;
-      transition:opacity .25s ease;
-      z-index:20;
+      transition:opacity .24s ease;
       backdrop-filter:blur(10px);
       -webkit-backdrop-filter:blur(10px);
     }
@@ -448,10 +435,9 @@
       max-width:430px;
       margin:0 auto;
       border-radius:30px 30px 22px 22px;
-      background:
-        linear-gradient(to bottom, rgba(24,24,24,.96), rgba(8,8,8,.97));
-      border:1px solid rgba(255,255,255,.08);
-      box-shadow:0 30px 80px rgba(0,0,0,.58);
+      background:linear-gradient(to bottom, rgba(22,22,22,.97), rgba(8,8,8,.98));
+      border:1px solid rgba(255,255,255,.07);
+      box-shadow:0 28px 80px rgba(0,0,0,.58);
       overflow:hidden;
     }
 
@@ -464,7 +450,7 @@
       width:42px;
       height:5px;
       border-radius:999px;
-      background:rgba(255,255,255,.15);
+      background:rgba(255,255,255,.14);
       margin:0 auto 12px;
     }
 
@@ -480,11 +466,12 @@
       font-size:15px;
       font-weight:600;
       letter-spacing:-.01em;
+      color:#fff;
     }
 
     .sheet-title span{
       font-size:13px;
-      color:rgba(255,255,255,.40);
+      color:rgba(255,255,255,.36);
     }
 
     .track-list{
@@ -515,17 +502,17 @@
       transition:background .18s ease, transform .14s ease;
     }
 
-    .track-item:active{
-      transform:scale(.995);
-    }
-
     .track-item:hover{
       background:rgba(255,255,255,.04);
     }
 
+    .track-item:active{
+      transform:scale(.995);
+    }
+
     .track-item.active{
-      background:rgba(255,255,255,.06);
-      box-shadow:inset 0 0 0 1px rgba(127,208,255,.18);
+      background:rgba(255,255,255,.055);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
     }
 
     .track-item-main{
@@ -539,9 +526,9 @@
     .track-index{
       width:24px;
       flex:0 0 24px;
-      color:rgba(255,255,255,.30);
       font-size:13px;
       font-weight:600;
+      color:rgba(255,255,255,.26);
     }
 
     .track-name{
@@ -559,7 +546,7 @@
       display:flex;
       align-items:center;
       gap:8px;
-      color:rgba(255,255,255,.32);
+      color:rgba(255,255,255,.28);
       font-size:12px;
     }
 
@@ -567,28 +554,28 @@
       width:8px;
       height:8px;
       border-radius:50%;
-      background:var(--accent);
-      box-shadow:0 0 12px rgba(127,208,255,.8);
+      background:rgba(255,255,255,.85);
+      box-shadow:0 0 10px rgba(180,225,255,.24);
     }
 
     .toast{
       position:fixed;
       left:50%;
-      bottom:calc(var(--safe-bottom) + 120px);
-      transform:translateX(-50%) translateY(12px);
+      bottom:calc(var(--safe-bottom) + 116px);
+      transform:translateX(-50%) translateY(10px);
+      z-index:40;
       padding:10px 14px;
       border-radius:999px;
+      border:1px solid rgba(255,255,255,.07);
       background:rgba(255,255,255,.08);
       color:#fff;
       font-size:13px;
       font-weight:500;
-      border:1px solid rgba(255,255,255,.08);
       backdrop-filter:blur(12px);
       -webkit-backdrop-filter:blur(12px);
       opacity:0;
       pointer-events:none;
       transition:opacity .22s ease, transform .22s ease;
-      z-index:40;
       white-space:nowrap;
     }
 
@@ -608,7 +595,7 @@
   <canvas id="bgCanvas"></canvas>
 
   <div class="app">
-    <div class="phone" id="phone">
+    <div class="phone">
       <div class="gesture-layer" id="gestureLayer" aria-hidden="true"></div>
 
       <div class="top">
@@ -622,9 +609,7 @@
 
         <div class="center">
           <div class="now-playing">
-            <div class="track-meta-top" id="metaTop">Выбери жанр</div>
-
-            <div class="track-title" id="trackTitle">Lo-Fi 1</div>
+            <div class="track-title" id="trackTitle">lofi 1</div>
 
             <div class="track-sub">
               <span id="trackCounter">1 / 1</span>
@@ -632,9 +617,13 @@
               <span id="trackTime">00:00</span>
             </div>
 
-            <div class="micro-visual" id="microVisual" aria-hidden="true"></div>
-
-            <div class="hint" id="hint">Свайп влево/вправо — треки • вверх — список</div>
+            <div class="micro" aria-hidden="true">
+              <div class="micro-dots">
+                <span class="micro-dot" id="dot1"></span>
+                <span class="micro-dot" id="dot2"></span>
+                <span class="micro-dot" id="dot3"></span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -673,13 +662,11 @@
     <div class="sheet-card">
       <div class="sheet-head">
         <div class="sheet-handle"></div>
-
         <div class="sheet-title">
           <strong id="sheetTitle">Треки</strong>
           <span id="sheetMeta">0</span>
         </div>
       </div>
-
       <div class="track-list" id="trackList"></div>
     </div>
   </div>
@@ -692,9 +679,9 @@
     const APP_NAME = "RESONANCE";
 
     const GENRES = [
-      { id: "lofi",  name: "Lo-Fi",  mode: "local-list", prefix: "lofi", maxFiles: 100 },
-      { id: "rap",   name: "Rap",    mode: "local-list", prefix: "rap",  maxFiles: 100 },
-      { id: "jazz",  name: "Jazz",   mode: "local-list", prefix: "jazz", maxFiles: 100 },
+      { id: "lofi", name: "Lo-Fi", mode: "local-list", prefix: "lofi", maxFiles: 100 },
+      { id: "rap", name: "Rap", mode: "local-list", prefix: "rap", maxFiles: 100 },
+      { id: "jazz", name: "Jazz", mode: "local-list", prefix: "jazz", maxFiles: 100 },
       {
         id: "chill",
         name: "Chill",
@@ -714,56 +701,49 @@
     const nextBtn = document.getElementById("nextBtn");
     const logo = document.getElementById("logo");
 
-    const metaTopEl = document.getElementById("metaTop");
     const trackTitleEl = document.getElementById("trackTitle");
     const trackCounterEl = document.getElementById("trackCounter");
     const trackTimeEl = document.getElementById("trackTime");
-    const queueTrigger = document.getElementById("queueTrigger");
 
+    const queueTrigger = document.getElementById("queueTrigger");
     const sheet = document.getElementById("sheet");
     const sheetBackdrop = document.getElementById("sheetBackdrop");
     const sheetTitle = document.getElementById("sheetTitle");
     const sheetMeta = document.getElementById("sheetMeta");
     const trackListEl = document.getElementById("trackList");
     const toastEl = document.getElementById("toast");
-
     const gestureLayer = document.getElementById("gestureLayer");
+
+    const dot1 = document.getElementById("dot1");
+    const dot2 = document.getElementById("dot2");
+    const dot3 = document.getElementById("dot3");
 
     const canvas = document.getElementById("bgCanvas");
     const ctx = canvas.getContext("2d", { alpha: true });
 
-    const microVisual = document.getElementById("microVisual");
-
     let currentGenre = GENRES[0];
+    let currentTrackList = [];
     let currentLocalIndex = 0;
     let currentStreamIndex = 0;
-    let currentTrackList = [];
-    let currentTrackTitle = "Lo-Fi 1";
+    let currentTrackTitle = "lofi 1";
     let sheetOpen = false;
-
-    let audioCtx = null;
-    let analyser = null;
-    let spectrum = null;
-    let sourceNode = null;
-    let usingRealAnalyser = false;
-
-    let fakeEnergy = 0.05;
-    let bgPulse = 0;
-    let microBars = [];
     let toastTimer = null;
 
     let touchStartX = 0;
     let touchStartY = 0;
     let touchStartTime = 0;
 
+    let fakeEnergy = 0.06;
+    let bgPulse = 0;
+
     const localTrackCache = {};
 
-    const floatingDust = Array.from({ length: 28 }, () => ({
+    const particles = Array.from({ length: 24 }, () => ({
       x: Math.random(),
       y: Math.random(),
-      r: Math.random() * 1.6 + 0.4,
-      a: Math.random() * .12 + .04,
-      drift: Math.random() * .18 + .06
+      r: Math.random() * 1.4 + 0.4,
+      a: Math.random() * .10 + .03,
+      drift: Math.random() * .18 + .05
     }));
 
     function createManifestAndSW(){
@@ -797,12 +777,10 @@
 
       if ("serviceWorker" in navigator && location.protocol !== "file:") {
         const swCode = `
-          const CACHE = 'resonance-ux-v1';
+          const CACHE = 'resonance-minimal-v2';
           self.addEventListener('install', (e) => {
             self.skipWaiting();
-            e.waitUntil(
-              caches.open(CACHE).then(cache => cache.addAll(['./']).catch(() => {}))
-            );
+            e.waitUntil(caches.open(CACHE).then(cache => cache.addAll(['./']).catch(()=>{})));
           });
           self.addEventListener('activate', (e) => {
             e.waitUntil(self.clients.claim());
@@ -820,25 +798,19 @@
       }
     }
 
-    function buildMicroVisual(){
-      microVisual.innerHTML = "";
-      microBars = [];
-      const count = 19;
+    function setPlayIcon(paused){
+      playIcon.innerHTML = paused
+        ? '<path d="M9 6.7v10.6c0 .7.8 1.14 1.4.78l7.9-5.3a.93.93 0 0 0 0-1.56l-7.9-5.3A.93.93 0 0 0 9 6.7Z" fill="currentColor"/>'
+        : '<path d="M8 6.5v11M16 6.5v11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>';
 
-      for (let i = 0; i < count; i++){
-        const bar = document.createElement("span");
-        bar.className = "micro-bar";
-        bar.style.height = "8px";
-        microVisual.appendChild(bar);
-        microBars.push(bar);
-      }
+      playBtn.classList.toggle("playing", !paused);
+      logo.classList.toggle("playing", !paused);
     }
 
     function showToast(text){
       clearTimeout(toastTimer);
       toastEl.textContent = text;
       toastEl.classList.add("show");
-
       toastTimer = setTimeout(() => {
         toastEl.classList.remove("show");
       }, 1400);
@@ -865,15 +837,6 @@
       else openSheet();
     });
 
-    function setPlayIcon(paused){
-      playIcon.innerHTML = paused
-        ? '<path d="M9 6.7v10.6c0 .7.8 1.14 1.4.78l7.9-5.3a.93.93 0 0 0 0-1.56l-7.9-5.3A.93.93 0 0 0 9 6.7Z" fill="currentColor"/>'
-        : '<path d="M8 6.5v11M16 6.5v11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>';
-
-      playBtn.classList.toggle("playing", !paused);
-      logo.classList.toggle("playing", !paused);
-    }
-
     function renderGenres(){
       genresEl.innerHTML = "";
 
@@ -893,16 +856,37 @@
       });
     }
 
-    function updateNowPlayingUI(){
-      const genreLabel = currentGenre?.name || APP_NAME;
-      metaTopEl.textContent = genreLabel;
+    function escapeHtml(text){
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
 
+    function stripExtension(name){
+      return name.replace(/\.[^/.]+$/, "");
+    }
+
+    function buildTrackTitle(genre, index, url){
+      if (genre.mode === "stream") return genre.name;
+
+      try{
+        const fileName = decodeURIComponent(url.split("/").pop() || "");
+        const clean = stripExtension(fileName);
+        if (clean) return clean.replace(/[-_]+/g, " ");
+      }catch(e){}
+
+      return `${genre.name} ${index + 1}`;
+    }
+
+    function updateNowPlayingUI(){
       trackTitleEl.style.opacity = ".72";
-      trackTitleEl.style.transform = "translateY(3px)";
+      trackTitleEl.style.transform = "translateY(2px)";
 
       requestAnimationFrame(() => {
         trackTitleEl.textContent = currentTrackTitle;
-
         trackTitleEl.style.opacity = "1";
         trackTitleEl.style.transform = "translateY(0)";
       });
@@ -915,7 +899,7 @@
         trackCounterEl.textContent = "—";
       }
 
-      sheetTitle.textContent = genreLabel;
+      sheetTitle.textContent = currentGenre.name;
       sheetMeta.textContent = currentGenre.mode === "local-list"
         ? `${currentTrackList.length} треков`
         : "Онлайн-поток";
@@ -929,7 +913,7 @@
         item.style.padding = "18px 14px 22px";
         item.style.color = "rgba(255,255,255,.42)";
         item.style.fontSize = "14px";
-        item.textContent = "Для этого жанра список треков недоступен, потому что используется онлайн-поток.";
+        item.textContent = "Для этого жанра используется онлайн-поток.";
         trackListEl.appendChild(item);
         return;
       }
@@ -961,72 +945,8 @@
       });
     }
 
-    function escapeHtml(text){
-      return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function stripExtension(name){
-      return name.replace(/\.[^/.]+$/, "");
-    }
-
-    function buildTrackTitle(genre, index, url){
-      if (genre.mode === "stream"){
-        return genre.name;
-      }
-
-      try{
-        const fileName = decodeURIComponent(url.split("/").pop() || "");
-        const clean = stripExtension(fileName);
-
-        if (clean) return clean.replace(/[-_]+/g, " ");
-      }catch(e){}
-
-      return `${genre.name} ${index + 1}`;
-    }
-
-    async function ensureAudioContext(){
-      if (!audioCtx){
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-
-        audioCtx = new AudioCtx();
-        analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 1024;
-        analyser.smoothingTimeConstant = 0.88;
-        spectrum = new Uint8Array(analyser.frequencyBinCount);
-
-        try{
-          audio.crossOrigin = "anonymous";
-          sourceNode = audioCtx.createMediaElementSource(audio);
-          sourceNode.connect(analyser);
-          analyser.connect(audioCtx.destination);
-          usingRealAnalyser = true;
-        }catch(err){
-          usingRealAnalyser = false;
-        }
-      }
-
-      if (audioCtx.state === "suspended") {
-        try { await audioCtx.resume(); } catch(e){}
-      }
-    }
-
-    async function safePlay(){
-      try{
-        await ensureAudioContext();
-        await audio.play();
-      }catch(e){}
-    }
-
     async function fileExists(url){
-      if (location.protocol === "file:") {
-        return true;
-      }
+      if (location.protocol === "file:") return true;
 
       try{
         const head = await fetch(url, { method: "HEAD", cache: "no-store" });
@@ -1070,19 +990,19 @@
       renderGenres();
       closeSheet();
 
-      if (genre.mode === "local-list") {
+      if (genre.mode === "local-list"){
         currentTrackList = await getLocalTracksForGenre(genre);
 
         if (!currentTrackList.length){
-          currentTrackTitle = `${genre.name}`;
+          currentTrackTitle = genre.name;
           updateNowPlayingUI();
           trackTimeEl.textContent = "Нет файлов";
-          showToast("Файлы не найдены");
           audio.pause();
           audio.removeAttribute("src");
           audio.load();
           setPlayIcon(true);
           renderTrackList();
+          showToast("Файлы не найдены");
           return;
         }
 
@@ -1130,9 +1050,7 @@
       }
 
       currentStreamIndex += 1;
-      if (currentStreamIndex >= currentGenre.urls.length){
-        currentStreamIndex = 0;
-      }
+      if (currentStreamIndex >= currentGenre.urls.length) currentStreamIndex = 0;
       audio.src = currentGenre.urls[currentStreamIndex];
       currentTrackTitle = currentGenre.name;
       audio.load();
@@ -1152,9 +1070,7 @@
       }
 
       currentStreamIndex -= 1;
-      if (currentStreamIndex < 0){
-        currentStreamIndex = currentGenre.urls.length - 1;
-      }
+      if (currentStreamIndex < 0) currentStreamIndex = currentGenre.urls.length - 1;
       audio.src = currentGenre.urls[currentStreamIndex];
       currentTrackTitle = currentGenre.name;
       audio.load();
@@ -1165,12 +1081,8 @@
 
     async function retryStream(){
       if (!currentGenre || currentGenre.mode !== "stream") return;
-
       currentStreamIndex += 1;
-      if (currentStreamIndex >= currentGenre.urls.length){
-        currentStreamIndex = 0;
-      }
-
+      if (currentStreamIndex >= currentGenre.urls.length) currentStreamIndex = 0;
       audio.src = currentGenre.urls[currentStreamIndex];
       audio.load();
       currentTrackTitle = currentGenre.name;
@@ -1187,6 +1099,80 @@
 
       if (audio.paused) await safePlay();
       else audio.pause();
+    }
+
+    async function ensurePlaybackHints(){
+      try{
+        if ("audioSession" in navigator && navigator.audioSession){
+          navigator.audioSession.type = "playback";
+        }
+      }catch(e){}
+    }
+
+    async function safePlay(){
+      try{
+        await ensurePlaybackHints();
+        await audio.play();
+      }catch(e){}
+    }
+
+    function formatTime(seconds){
+      if (!Number.isFinite(seconds) || seconds < 0) return "00:00";
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    }
+
+    function updateTime(){
+      if (currentGenre.mode === "stream"){
+        trackTimeEl.textContent = audio.paused ? "Пауза" : "Эфир";
+        return;
+      }
+      trackTimeEl.textContent = formatTime(audio.currentTime || 0);
+    }
+
+    function createArtworkDataURL(text){
+      const safe = String(text || APP_NAME).slice(0, 24);
+      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <rect width="512" height="512" rx="96" fill="#000"/>
+          <text x="256" y="270" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="42" letter-spacing="10">${safe}</text>
+        </svg>
+      `);
+    }
+
+    function updateMediaSession(){
+      if (!("mediaSession" in navigator)) return;
+
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: currentTrackTitle || currentGenre?.name || APP_NAME,
+        artist: currentGenre?.name || APP_NAME,
+        album: APP_NAME,
+        artwork: [{
+          src: createArtworkDataURL(currentGenre?.name || APP_NAME),
+          sizes: "512x512",
+          type: "image/svg+xml"
+        }]
+      });
+
+      navigator.mediaSession.setActionHandler("play", async () => { await safePlay(); });
+      navigator.mediaSession.setActionHandler("pause", () => audio.pause());
+
+      try{
+        navigator.mediaSession.setActionHandler("nexttrack", async () => { await nextTrack(); });
+      }catch(e){}
+
+      try{
+        navigator.mediaSession.setActionHandler("previoustrack", async () => { await prevTrack(); });
+      }catch(e){}
+
+      updateMediaSessionPlayback();
+    }
+
+    function updateMediaSessionPlayback(){
+      if ("mediaSession" in navigator) {
+        navigator.mediaSession.playbackState = audio.paused ? "paused" : "playing";
+      }
     }
 
     playBtn.addEventListener("click", togglePlayback);
@@ -1217,67 +1203,8 @@
       }
     });
 
-    audio.addEventListener("loadedmetadata", () => {
-      updateTime();
-    });
-
-    audio.addEventListener("timeupdate", () => {
-      updateTime();
-    });
-
-    function formatTime(seconds){
-      if (!Number.isFinite(seconds) || seconds < 0) return "00:00";
-      const m = Math.floor(seconds / 60);
-      const s = Math.floor(seconds % 60);
-      return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-    }
-
-    function updateTime(){
-      if (currentGenre.mode === "stream"){
-        trackTimeEl.textContent = audio.paused ? "Пауза" : "Эфир";
-        return;
-      }
-
-      trackTimeEl.textContent = formatTime(audio.currentTime || 0);
-    }
-
-    function createArtworkDataURL(text){
-      const safe = String(text || APP_NAME).slice(0, 24);
-      return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <rect width="512" height="512" rx="96" fill="#000"/>
-          <text x="256" y="270" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="42" letter-spacing="10">${safe}</text>
-        </svg>
-      `);
-    }
-
-    function updateMediaSession(){
-      if (!("mediaSession" in navigator)) return;
-
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: currentTrackTitle || currentGenre?.name || APP_NAME,
-        artist: currentGenre?.name || APP_NAME,
-        album: APP_NAME,
-        artwork: [{
-          src: createArtworkDataURL(currentGenre?.name || APP_NAME),
-          sizes: "512x512",
-          type: "image/svg+xml"
-        }]
-      });
-
-      navigator.mediaSession.setActionHandler("play", async () => { await safePlay(); });
-      navigator.mediaSession.setActionHandler("pause", () => audio.pause());
-      navigator.mediaSession.setActionHandler("nexttrack", async () => { await nextTrack(); });
-      navigator.mediaSession.setActionHandler("previoustrack", async () => { await prevTrack(); });
-
-      updateMediaSessionPlayback();
-    }
-
-    function updateMediaSessionPlayback(){
-      if ("mediaSession" in navigator) {
-        navigator.mediaSession.playbackState = audio.paused ? "paused" : "playing";
-      }
-    }
+    audio.addEventListener("loadedmetadata", updateTime);
+    audio.addEventListener("timeupdate", updateTime);
 
     function resizeCanvas(){
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -1290,41 +1217,40 @@
     resizeCanvas();
 
     function getEnergy(){
-      if (usingRealAnalyser && analyser && spectrum){
-        try{
-          analyser.getByteFrequencyData(spectrum);
-
-          let sum = 0;
-          const start = 2;
-          const end = Math.max(start + 1, Math.floor(spectrum.length * 0.18));
-
-          for (let i = start; i < end; i++) sum += spectrum[i];
-          const avg = sum / Math.max(1, end - start);
-
-          return Math.max(0.015, avg / 255);
-        }catch(e){}
-      }
-
       const t = performance.now() * 0.001;
-      const boost = !audio.paused && audio.src ? 0.13 : 0;
-      fakeEnergy += (((0.02 + Math.sin(t * 1.7) * 0.015) + boost) - fakeEnergy) * 0.05;
-      return Math.max(0.015, fakeEnergy);
+      const boost = !audio.paused && audio.src ? .14 : 0;
+      fakeEnergy += (((0.02 + Math.sin(t * 1.5) * 0.012) + boost) - fakeEnergy) * 0.05;
+      return Math.max(0.02, fakeEnergy);
     }
 
-    function updateMicroVisual(energy, time){
+    function updateQuietPulse(time){
       const t = time * 0.001;
+      const e = getEnergy();
 
-      microBars.forEach((bar, i) => {
-        const wave = Math.sin(t * 4 + i * 0.55) * 0.5 + 0.5;
-        const spread = 1 - Math.abs((i - (microBars.length - 1) / 2) / ((microBars.length - 1) / 2));
-        const value = Math.max(.14, energy * (0.5 + spread * 0.9) + wave * 0.14);
-        const height = 6 + value * 24;
-        const opacity = 0.2 + value * 0.92;
+      if (audio.paused || !audio.src){
+        [dot1, dot2, dot3].forEach((d) => {
+          d.classList.remove("live");
+          d.style.transform = "scale(1)";
+          d.style.opacity = ".42";
+        });
+        return;
+      }
 
-        bar.style.height = `${height}px`;
-        bar.style.opacity = String(Math.min(1, opacity));
-        bar.style.transform = `scaleY(${0.96 + value * 0.08})`;
-      });
+      const a = 0.92 + Math.sin(t * 2.4) * 0.10 + e * 0.12;
+      const b = 1.06 + Math.sin(t * 2.4 + 0.7) * 0.12 + e * 0.16;
+      const c = 0.92 + Math.sin(t * 2.4 + 1.4) * 0.10 + e * 0.12;
+
+      dot1.classList.add("live");
+      dot2.classList.add("live");
+      dot3.classList.add("live");
+
+      dot1.style.transform = `scale(${a})`;
+      dot2.style.transform = `scale(${b})`;
+      dot3.style.transform = `scale(${c})`;
+
+      dot1.style.opacity = String(0.42 + e * 0.8);
+      dot2.style.opacity = String(0.52 + e * 0.9);
+      dot3.style.opacity = String(0.42 + e * 0.8);
     }
 
     function drawBackground(time){
@@ -1335,95 +1261,57 @@
       ctx.clearRect(0, 0, w, h);
 
       const e = getEnergy();
-      bgPulse += ((0.14 + e * 0.95) - bgPulse) * 0.05;
+      bgPulse += ((0.12 + e * 0.7) - bgPulse) * 0.05;
 
       const activeId = currentGenre?.id || "lofi";
-      const isLofi = activeId === "lofi";
-      const isRap = activeId === "rap";
-      const isJazz = activeId === "jazz";
-      const isChill = activeId === "chill";
+      let c1 = "120,205,255";
+      let c2 = "255,156,125";
 
-      let mainA = "127,208,255";
-      let mainB = "255,154,120";
-
-      if (isRap){
-        mainA = "220,220,220";
-        mainB = "120,120,120";
-      } else if (isJazz){
-        mainA = "255,198,120";
-        mainB = "255,122,168";
-      } else if (isChill){
-        mainA = "149,169,255";
-        mainB = "136,255,224";
-      } else if (isLofi){
-        mainA = "127,208,255";
-        mainB = "255,164,130";
+      if (activeId === "rap"){
+        c1 = "210,210,210";
+        c2 = "120,120,120";
+      } else if (activeId === "jazz"){
+        c1 = "255,205,130";
+        c2 = "255,130,165";
+      } else if (activeId === "chill"){
+        c1 = "150,170,255";
+        c2 = "140,255,225";
       }
 
-      const topGlow = ctx.createRadialGradient(
-        w * 0.5, h * 0.24, 0,
-        w * 0.5, h * 0.24, Math.min(w, h) * 0.40
-      );
-      topGlow.addColorStop(0, `rgba(${mainA},${0.055 + bgPulse * 0.08})`);
-      topGlow.addColorStop(.5, `rgba(${mainA},${0.018 + bgPulse * 0.03})`);
-      topGlow.addColorStop(1, `rgba(${mainA},0)`);
+      const topGlow = ctx.createRadialGradient(w * .5, h * .22, 0, w * .5, h * .22, Math.min(w, h) * .36);
+      topGlow.addColorStop(0, `rgba(${c1},${0.04 + bgPulse * 0.05})`);
+      topGlow.addColorStop(.45, `rgba(${c1},${0.015 + bgPulse * 0.02})`);
+      topGlow.addColorStop(1, `rgba(${c1},0)`);
       ctx.fillStyle = topGlow;
       ctx.fillRect(0, 0, w, h);
 
-      const sideGlow = ctx.createRadialGradient(
-        w * 0.86, h * 0.58, 0,
-        w * 0.86, h * 0.58, Math.min(w, h) * 0.46
-      );
-      sideGlow.addColorStop(0, `rgba(${mainB},${0.05 + bgPulse * 0.10})`);
-      sideGlow.addColorStop(.4, `rgba(${mainB},${0.02 + bgPulse * 0.04})`);
-      sideGlow.addColorStop(1, `rgba(${mainB},0)`);
-      ctx.fillStyle = sideGlow;
+      const bottomGlow = ctx.createRadialGradient(w * .78, h * .74, 0, w * .78, h * .74, Math.min(w, h) * .40);
+      bottomGlow.addColorStop(0, `rgba(${c2},${0.04 + bgPulse * 0.06})`);
+      bottomGlow.addColorStop(.4, `rgba(${c2},${0.015 + bgPulse * 0.02})`);
+      bottomGlow.addColorStop(1, `rgba(${c2},0)`);
+      ctx.fillStyle = bottomGlow;
       ctx.fillRect(0, 0, w, h);
 
-      const centerLineY = h * 0.47;
-      const centerLine = ctx.createLinearGradient(w * 0.18, centerLineY, w * 0.82, centerLineY);
-      centerLine.addColorStop(0, `rgba(${mainA},0)`);
-      centerLine.addColorStop(.25, `rgba(${mainA},${0.10 + e * 0.18})`);
-      centerLine.addColorStop(.5, `rgba(255,255,255,${0.18 + e * 0.38})`);
-      centerLine.addColorStop(.75, `rgba(${mainB},${0.10 + e * 0.16})`);
-      centerLine.addColorStop(1, `rgba(${mainB},0)`);
+      const lineY = h * .50;
+      const line = ctx.createLinearGradient(w * .24, lineY, w * .76, lineY);
+      line.addColorStop(0, `rgba(${c1},0)`);
+      line.addColorStop(.5, `rgba(255,255,255,${0.05 + e * 0.08})`);
+      line.addColorStop(1, `rgba(${c2},0)`);
+      ctx.fillStyle = line;
+      ctx.fillRect(w * .24, lineY - .5, w * .52, 1);
 
-      ctx.fillStyle = centerLine;
-      ctx.fillRect(w * 0.18, centerLineY - 0.7, w * 0.64, 1.4);
-
-      const pulseX = w * 0.5 + Math.sin(t * 1.3) * (w * 0.10);
-      const pulse = ctx.createRadialGradient(
-        pulseX, centerLineY, 0,
-        pulseX, centerLineY, Math.min(w, h) * 0.10
-      );
-      pulse.addColorStop(0, `rgba(255,255,255,${0.28 + e * 0.42})`);
-      pulse.addColorStop(.35, `rgba(${mainA},${0.10 + e * 0.18})`);
-      pulse.addColorStop(1, `rgba(${mainA},0)`);
-      ctx.fillStyle = pulse;
-      ctx.fillRect(0, 0, w, h);
-
-      for (const d of floatingDust){
-        const x = (d.x * w + Math.sin(t * d.drift + d.y * 8) * 8);
-        const y = (d.y * h + Math.cos(t * d.drift + d.x * 7) * 8);
+      for (const p of particles){
+        const x = p.x * w + Math.sin(t * p.drift + p.y * 8) * 8;
+        const y = p.y * h + Math.cos(t * p.drift + p.x * 7) * 8;
 
         ctx.beginPath();
-        ctx.arc(x, y, d.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${d.a * (0.9 + bgPulse * 1.6)})`;
+        ctx.arc(x, y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${p.a * (0.9 + bgPulse * 1.1)})`;
         ctx.fill();
       }
 
-      updateMicroVisual(e, time);
+      updateQuietPulse(time);
       requestAnimationFrame(drawBackground);
-    }
-
-    function initWarmup(){
-      ["touchstart", "click"].forEach((evt) => {
-        window.addEventListener(evt, async () => {
-          if (!audioCtx) {
-            try { await ensureAudioContext(); } catch(e){}
-          }
-        }, { once:true, passive:true });
-      });
     }
 
     function setupGestures(){
@@ -1448,20 +1336,14 @@
         if (absX < 20 && absY < 20) return;
 
         if (absX > absY && absX > 48){
-          if (dx < 0){
-            await nextTrack();
-          } else {
-            await prevTrack();
-          }
+          if (dx < 0) await nextTrack();
+          else await prevTrack();
           return;
         }
 
         if (absY > absX && absY > 58){
-          if (dy < 0){
-            openSheet();
-          } else {
-            closeSheet();
-          }
+          if (dy < 0) openSheet();
+          else closeSheet();
         }
       }, { passive:true });
 
@@ -1476,16 +1358,23 @@
       });
     }
 
+    function initWarmup(){
+      ["touchstart", "click"].forEach((evt) => {
+        window.addEventListener(evt, async () => {
+          await ensurePlaybackHints();
+        }, { once:true, passive:true });
+      });
+    }
+
     function init(){
       createManifestAndSW();
-      buildMicroVisual();
       renderGenres();
       setPlayIcon(true);
       updateNowPlayingUI();
       updateTime();
       requestAnimationFrame(drawBackground);
-      initWarmup();
       setupGestures();
+      initWarmup();
       selectGenre(currentGenre, false);
     }
 
