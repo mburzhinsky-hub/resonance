@@ -17,18 +17,14 @@
       --muted:rgba(255,255,255,.34);
       --muted-2:rgba(255,255,255,.18);
       --line:rgba(255,255,255,.08);
-      --panel:rgba(255,255,255,.04);
-      --panel-2:rgba(255,255,255,.06);
       --safe-top:max(14px, env(safe-area-inset-top));
       --safe-bottom:max(18px, env(safe-area-inset-bottom));
 
-      --theme-a:110,200,255;
-      --theme-b:255,150,120;
-      --theme-c:185,232,255;
-      --theme-ui:rgba(255,255,255,.08);
-      --theme-ui-strong:rgba(255,255,255,.15);
-      --theme-glow:.22;
-      --theme-name:"Audi";
+      --theme-a:90,180,255;
+      --theme-b:170,230,255;
+      --theme-c:220,245,255;
+      --theme-accent:rgba(120,200,255,.18);
+      --theme-name:"AUDI";
     }
 
     *{
@@ -109,7 +105,7 @@
     .top{
       position:relative;
       z-index:4;
-      min-height:72px;
+      min-height:64px;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -121,14 +117,14 @@
       font-weight:300;
       letter-spacing:.34em;
       color:rgba(255,255,255,.84);
-      transition:opacity .24s ease, text-shadow .24s ease;
+      transition:text-shadow .24s ease;
       white-space:nowrap;
     }
 
     .logo.playing{
       text-shadow:
         0 0 16px rgba(255,255,255,.08),
-        0 0 30px rgba(var(--theme-c),.10);
+        0 0 28px rgba(var(--theme-c),.10);
     }
 
     .content{
@@ -150,22 +146,28 @@
       flex:0 0 auto;
     }
 
+    .themes-block{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:8px;
+    }
+
     .themes{
       display:flex;
-      gap:8px;
+      gap:10px;
       align-items:center;
       justify-content:center;
       flex-wrap:wrap;
-      max-width:100%;
     }
 
     .theme-chip{
-      width:32px;
-      height:32px;
+      width:34px;
+      height:34px;
       border:none;
       border-radius:50%;
       cursor:pointer;
-      border:1px solid rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.16);
       box-shadow:0 0 0 1px rgba(255,255,255,.03);
       transition:transform .15s ease, box-shadow .2s ease, border-color .2s ease;
       position:relative;
@@ -180,40 +182,39 @@
       border-color:#fff;
       box-shadow:
         0 0 0 1px rgba(255,255,255,.08),
-        0 0 16px rgba(255,255,255,.10);
+        0 0 14px rgba(255,255,255,.10);
     }
 
     .theme-chip[data-theme="audi"]{
-      background:linear-gradient(135deg, rgb(80,170,255), rgb(210,235,255));
+      background:linear-gradient(135deg, rgb(72,165,255), rgb(215,240,255));
     }
 
     .theme-chip[data-theme="porsche"]{
-      background:linear-gradient(135deg, rgb(255,164,110), rgb(255,100,70));
+      background:linear-gradient(135deg, rgb(255,155,95), rgb(255,96,64));
     }
 
     .theme-chip[data-theme="mercedes"]{
-      background:linear-gradient(135deg, rgb(180,180,180), rgb(255,255,255));
+      background:linear-gradient(135deg, rgb(170,170,170), rgb(255,255,255));
     }
 
     .theme-chip[data-theme="bmw"]{
-      background:linear-gradient(135deg, rgb(70,150,255), rgb(180,240,255));
+      background:linear-gradient(135deg, rgb(55,145,255), rgb(120,235,255));
     }
 
     .theme-label{
-      margin-top:8px;
       text-align:center;
-      color:rgba(255,255,255,.26);
+      color:rgba(255,255,255,.28);
       font-size:12px;
       font-weight:600;
-      letter-spacing:.14em;
+      letter-spacing:.16em;
       text-transform:uppercase;
-      min-height:16px;
+      min-height:15px;
     }
 
     .genres-wrap{
       display:flex;
       justify-content:center;
-      margin-top:8px;
+      margin-top:6px;
       flex:0 0 auto;
     }
 
@@ -311,7 +312,7 @@
       display:flex;
       align-items:flex-end;
       justify-content:center;
-      text-shadow:0 0 18px rgba(var(--theme-c),.04);
+      text-shadow:0 0 18px rgba(var(--theme-c),.05);
     }
 
     .track-sub{
@@ -737,7 +738,7 @@
 
       <div class="content">
         <div class="themes-wrap">
-          <div>
+          <div class="themes-block">
             <div class="themes">
               <button class="theme-chip active" data-theme="audi" aria-label="Audi"></button>
               <button class="theme-chip" data-theme="porsche" aria-label="Porsche"></button>
@@ -842,28 +843,24 @@
         a: "90,180,255",
         b: "170,230,255",
         c: "220,245,255",
-        glow: .24,
         label: "AUDI"
       },
       porsche: {
         a: "255,150,80",
         b: "255,95,60",
         c: "255,220,170",
-        glow: .26,
         label: "PORSCHE"
       },
       mercedes: {
         a: "185,185,185",
         b: "255,255,255",
         c: "235,235,235",
-        glow: .20,
         label: "MERCEDES"
       },
       bmw: {
         a: "60,150,255",
         b: "80,220,255",
         c: "200,245,255",
-        glow: .24,
         label: "BMW"
       }
     };
@@ -984,7 +981,6 @@
       document.documentElement.style.setProperty("--theme-a", theme.a);
       document.documentElement.style.setProperty("--theme-b", theme.b);
       document.documentElement.style.setProperty("--theme-c", theme.c);
-      document.documentElement.style.setProperty("--theme-glow", theme.glow);
 
       themeLabelEl.textContent = theme.label;
 
@@ -1511,13 +1507,12 @@
       const themeA = style.getPropertyValue("--theme-a").trim();
       const themeB = style.getPropertyValue("--theme-b").trim();
       const themeC = style.getPropertyValue("--theme-c").trim();
-      const glow = parseFloat(style.getPropertyValue("--theme-glow")) || .22;
 
       const sphere1 = ctx.createRadialGradient(
         w * 0.30, h * 0.30, 0,
         w * 0.30, h * 0.30, Math.min(w, h) * 0.40
       );
-      sphere1.addColorStop(0, `rgba(${themeA},${0.12 + bgPulse * (0.12 + glow * 0.22)})`);
+      sphere1.addColorStop(0, `rgba(${themeA},${0.12 + bgPulse * 0.16})`);
       sphere1.addColorStop(.35, `rgba(${themeA},${0.04 + bgPulse * 0.07})`);
       sphere1.addColorStop(1, `rgba(${themeA},0)`);
       ctx.fillStyle = sphere1;
@@ -1527,7 +1522,7 @@
         w * 0.77, h * 0.68, 0,
         w * 0.77, h * 0.68, Math.min(w, h) * 0.44
       );
-      sphere2.addColorStop(0, `rgba(${themeB},${0.10 + bgPulse * (0.10 + glow * 0.18)})`);
+      sphere2.addColorStop(0, `rgba(${themeB},${0.10 + bgPulse * 0.15})`);
       sphere2.addColorStop(.34, `rgba(${themeB},${0.04 + bgPulse * 0.06})`);
       sphere2.addColorStop(1, `rgba(${themeB},0)`);
       ctx.fillStyle = sphere2;
@@ -1553,8 +1548,8 @@
 
       const ribbonA = ctx.createLinearGradient(w * 0.08, h * 0.74, w * 0.88, h * 0.28);
       ribbonA.addColorStop(0, `rgba(${themeA},0)`);
-      ribbonA.addColorStop(.35, `rgba(${themeA},${0.04 + glow * 0.05})`);
-      ribbonA.addColorStop(.55, `rgba(${themeC},${0.07 + glow * 0.08})`);
+      ribbonA.addColorStop(.35, `rgba(${themeA},0.08)`);
+      ribbonA.addColorStop(.55, `rgba(${themeC},0.12)`);
       ribbonA.addColorStop(1, `rgba(${themeC},0)`);
       ctx.strokeStyle = ribbonA;
       ctx.lineWidth = 2;
@@ -1569,8 +1564,8 @@
 
       const ribbonB = ctx.createLinearGradient(w * 0.14, h * 0.82, w * 0.94, h * 0.36);
       ribbonB.addColorStop(0, `rgba(${themeB},0)`);
-      ribbonB.addColorStop(.42, `rgba(${themeB},${0.05 + glow * 0.05})`);
-      ribbonB.addColorStop(.70, `rgba(${themeA},${0.04 + glow * 0.05})`);
+      ribbonB.addColorStop(.42, `rgba(${themeB},0.08)`);
+      ribbonB.addColorStop(.70, `rgba(${themeA},0.06)`);
       ribbonB.addColorStop(1, `rgba(${themeA},0)`);
       ctx.strokeStyle = ribbonB;
       ctx.lineWidth = 1.4;
