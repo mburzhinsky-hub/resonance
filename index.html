@@ -80,19 +80,16 @@
       align-items:stretch;
     }
 
-    .phone{
-      position:relative;
+    .shell{
       width:100%;
       max-width:430px;
       height:100%;
+      position:relative;
+      overflow:hidden;
       padding:
         calc(var(--safe-top) + 6px)
         22px
         calc(var(--safe-bottom) + 16px);
-      display:flex;
-      flex-direction:column;
-      overflow:hidden;
-      background:transparent;
       transition:max-width .25s ease, padding .25s ease;
     }
 
@@ -103,63 +100,26 @@
       background:transparent;
     }
 
-    .top{
-      position:relative;
-      z-index:4;
-      min-height:72px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex:0 0 auto;
-    }
-
     .logo{
       font-size:20px;
       font-weight:300;
       letter-spacing:.34em;
       color:rgba(255,255,255,.84);
-      transition:opacity .24s ease, text-shadow .24s ease;
       white-space:nowrap;
+      transition:text-shadow .25s ease;
     }
 
     .logo.playing{
       text-shadow:
         0 0 16px rgba(255,255,255,.08),
-        0 0 30px rgba(var(--theme-c),.08);
+        0 0 28px rgba(var(--theme-c),.08);
     }
 
-    .content{
-      position:relative;
-      z-index:4;
-      flex:1;
-      min-height:0;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      gap:10px;
+    .hidden{
+      display:none !important;
     }
 
-    .genres-wrap{
-      display:flex;
-      justify-content:center;
-      margin-top:8px;
-      flex:0 0 auto;
-    }
-
-    .genres{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      overflow-x:auto;
-      max-width:100%;
-      padding:4px 2px 4px;
-      scrollbar-width:none;
-      -ms-overflow-style:none;
-    }
-
-    .genres::-webkit-scrollbar{
-      display:none;
-    }
+    /* ---------- shared ---------- */
 
     .genre{
       border:none;
@@ -168,12 +128,6 @@
       color:rgba(255,255,255,.42);
       border:1px solid rgba(255,255,255,.055);
       border-radius:999px;
-      min-width:82px;
-      min-height:46px;
-      padding:0 18px;
-      font-size:15px;
-      font-weight:500;
-      letter-spacing:-.01em;
       cursor:pointer;
       transition:
         color .2s ease,
@@ -181,12 +135,8 @@
         border-color .2s ease,
         box-shadow .2s ease,
         transform .14s ease;
-      white-space:nowrap;
       backdrop-filter:blur(8px);
       -webkit-backdrop-filter:blur(8px);
-      position:relative;
-      overflow:hidden;
-      z-index:5;
     }
 
     .genre:active{
@@ -202,7 +152,147 @@
         0 0 0 1px rgba(255,255,255,.02);
     }
 
-    .center{
+    .nav-btn{
+      border:none;
+      background:transparent;
+      color:rgba(255,255,255,.42);
+      cursor:pointer;
+      transition:transform .14s ease, color .2s ease, background .2s ease;
+      outline:none;
+    }
+
+    .nav-btn:active{ transform:scale(.96); }
+    .nav-btn.tap{
+      transform:scale(.94);
+      color:#fff;
+      background:rgba(255,255,255,.045);
+    }
+
+    .play-btn{
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(circle at 50% 34%, rgba(255,255,255,.07), rgba(255,255,255,.02) 55%, rgba(255,255,255,.01)),
+        rgba(255,255,255,.02);
+      color:#fff;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.07),
+        0 10px 30px rgba(0,0,0,.38);
+      transition:transform .18s ease, box-shadow .22s ease, border-color .22s ease;
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      outline:none;
+    }
+
+    .play-btn:active{ transform:scale(.97); }
+
+    .play-btn.playing{
+      border-color:rgba(255,255,255,.14);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.09),
+        0 12px 34px rgba(0,0,0,.44),
+        0 0 20px rgba(var(--theme-c),.08);
+    }
+
+    .action-btn{
+      border:none;
+      background:rgba(255,255,255,.02);
+      color:rgba(255,255,255,.42);
+      border:1px solid rgba(255,255,255,.05);
+      border-radius:999px;
+      cursor:pointer;
+      transition:color .2s ease, background .2s ease, transform .14s ease, border-color .2s ease;
+      outline:none;
+    }
+
+    .action-btn:hover{
+      color:#fff;
+      background:rgba(255,255,255,.03);
+    }
+
+    .action-btn:active{ transform:scale(.985); }
+
+    .action-btn.ready{
+      color:#fff;
+      border-color:rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+    }
+
+    .micro-dots{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+    }
+
+    .micro-dot{
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:rgba(255,255,255,.18);
+      opacity:.42;
+      transform:scale(1);
+      transition:
+        opacity .24s ease,
+        transform .24s ease,
+        background .24s ease,
+        box-shadow .24s ease;
+    }
+
+    .micro-dot.live{
+      background:rgba(255,255,255,.82);
+      box-shadow:0 0 10px rgba(var(--theme-c),.20);
+    }
+
+    /* ---------- portrait ---------- */
+
+    .portrait{
+      position:relative;
+      z-index:4;
+      width:100%;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .portrait-top{
+      min-height:72px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 auto;
+    }
+
+    .portrait-genres-wrap{
+      display:flex;
+      justify-content:center;
+      margin-top:8px;
+    }
+
+    .portrait-genres{
+      display:flex;
+      gap:10px;
+      overflow-x:auto;
+      scrollbar-width:none;
+      -ms-overflow-style:none;
+      padding:4px 2px;
+    }
+
+    .portrait-genres::-webkit-scrollbar{ display:none; }
+
+    .portrait .genre{
+      min-width:82px;
+      min-height:46px;
+      padding:0 18px;
+      font-size:15px;
+      font-weight:500;
+    }
+
+    .portrait-center{
       flex:1 1 auto;
       min-height:0;
       display:flex;
@@ -212,23 +302,13 @@
       padding:0 8px;
     }
 
-    .now-playing{
+    .portrait-now{
       width:100%;
       max-width:320px;
       display:flex;
       flex-direction:column;
       align-items:center;
-      justify-content:center;
       gap:10px;
-    }
-
-    .drive-side,
-    .drive-right{
-      display:none;
-    }
-
-    .drive-badge{
-      display:none;
     }
 
     .track-title{
@@ -240,11 +320,11 @@
       color:#fff;
       word-break:break-word;
       text-wrap:balance;
-      transition:opacity .2s ease, transform .2s ease;
       min-height:1.9em;
       display:flex;
       align-items:flex-end;
       justify-content:center;
+      transition:opacity .2s ease, transform .2s ease;
     }
 
     .track-sub{
@@ -267,54 +347,20 @@
       flex:0 0 4px;
     }
 
-    .micro{
-      width:100%;
+    .portrait-micro{
       height:42px;
-      margin-top:10px;
       display:flex;
       align-items:center;
       justify-content:center;
-      pointer-events:none;
-    }
-
-    .micro-dots{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      min-width:54px;
-      height:18px;
-    }
-
-    .micro-dot{
-      width:5px;
-      height:5px;
-      border-radius:50%;
-      background:rgba(255,255,255,.18);
-      opacity:.42;
-      transform:scale(1);
-      transition:
-        opacity .24s ease,
-        transform .24s ease,
-        background .24s ease,
-        box-shadow .24s ease;
-      box-shadow:none;
-    }
-
-    .micro-dot.live{
-      background:rgba(255,255,255,.82);
-      box-shadow:0 0 10px rgba(var(--theme-c),.20);
     }
 
     .swipe-hint{
-      margin-top:6px;
       display:flex;
       align-items:center;
       gap:10px;
       color:rgba(255,255,255,.22);
       font-size:13px;
       font-weight:500;
-      letter-spacing:-.01em;
       padding:8px 14px;
       border-radius:999px;
       background:rgba(255,255,255,.02);
@@ -329,16 +375,15 @@
       line-height:1;
     }
 
-    .bottom{
+    .portrait-bottom{
       flex:0 0 auto;
       display:flex;
       flex-direction:column;
       align-items:center;
       gap:14px;
-      padding-bottom:2px;
     }
 
-    .controls{
+    .portrait-controls{
       width:100%;
       max-width:320px;
       display:grid;
@@ -347,80 +392,20 @@
       gap:12px;
     }
 
-    .nav-btn{
+    .portrait .nav-btn{
       width:52px;
       height:52px;
-      border:none;
-      background:transparent;
-      color:rgba(255,255,255,.42);
       border-radius:50%;
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      transition:
-        transform .14s ease,
-        color .2s ease,
-        background .2s ease;
       justify-self:center;
-      position:relative;
-      z-index:5;
-      outline:none;
     }
 
-    .nav-btn:hover{
-      color:#fff;
-      background:rgba(255,255,255,.035);
-    }
-
-    .nav-btn:active{
-      transform:scale(.96);
-    }
-
-    .nav-btn.tap{
-      transform:scale(.94);
-      color:#fff;
-      background:rgba(255,255,255,.045);
-    }
-
-    .play-btn{
+    .portrait .play-btn{
       width:102px;
       height:102px;
       border-radius:50%;
-      border:1px solid rgba(255,255,255,.10);
-      background:
-        radial-gradient(circle at 50% 34%, rgba(255,255,255,.07), rgba(255,255,255,.02) 55%, rgba(255,255,255,.01)),
-        rgba(255,255,255,.02);
-      color:#fff;
-      display:grid;
-      place-items:center;
-      cursor:pointer;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.07),
-        0 10px 30px rgba(0,0,0,.38);
-      transition:
-        transform .18s ease,
-        box-shadow .22s ease,
-        border-color .22s ease;
-      backdrop-filter:blur(14px);
-      -webkit-backdrop-filter:blur(14px);
-      position:relative;
-      z-index:5;
-      outline:none;
     }
 
-    .play-btn:active{
-      transform:scale(.97);
-    }
-
-    .play-btn.playing{
-      border-color:rgba(255,255,255,.14);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.09),
-        0 12px 34px rgba(0,0,0,.44),
-        0 0 20px rgba(var(--theme-c),.08);
-    }
-
-    .actions{
+    .portrait-actions{
       display:flex;
       align-items:center;
       justify-content:center;
@@ -428,41 +413,219 @@
       flex-wrap:wrap;
     }
 
-    .action-btn{
-      border:none;
-      background:transparent;
-      color:rgba(255,255,255,.42);
+    .portrait .action-btn{
+      padding:10px 14px;
       font-size:14px;
       font-weight:500;
-      letter-spacing:-.01em;
-      padding:10px 14px;
-      border-radius:999px;
-      cursor:pointer;
-      transition:color .2s ease, background .2s ease, transform .14s ease, border-color .2s ease;
+    }
+
+    /* ---------- landscape drive ---------- */
+
+    .drive{
       position:relative;
-      z-index:5;
-      border:1px solid rgba(255,255,255,.05);
-      background:rgba(255,255,255,.02);
-      outline:none;
-    }
-
-    .action-btn:hover{
-      color:#fff;
-      background:rgba(255,255,255,.03);
-    }
-
-    .action-btn:active{
-      transform:scale(.985);
-    }
-
-    .action-btn.ready{
-      color:#fff;
-      border-color:rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-    }
-
-    .theme-panel{
+      z-index:4;
+      width:100%;
+      height:100%;
       display:none;
+      grid-template-columns:220px 1fr 190px;
+      grid-template-rows:56px 1fr 150px;
+      gap:16px 18px;
+      align-items:stretch;
+    }
+
+    .drive-top{
+      grid-column:1 / span 3;
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-start;
+      padding-top:4px;
+    }
+
+    .drive-left{
+      grid-column:1;
+      grid-row:2 / span 2;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:14px;
+    }
+
+    .drive-genres{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .drive .genre{
+      width:100%;
+      min-height:68px;
+      padding:0 22px;
+      border-radius:24px;
+      text-align:left;
+      font-size:22px;
+      font-weight:600;
+      letter-spacing:.08em;
+      background:rgba(255,255,255,.02);
+      border-color:rgba(255,255,255,.08);
+    }
+
+    .drive .genre.active{
+      background:linear-gradient(to right, rgba(var(--theme-a),.10), rgba(255,255,255,.05));
+      border-color:rgba(var(--theme-c),.22);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05),
+        0 0 22px rgba(var(--theme-a),.08);
+    }
+
+    .drive-center{
+      grid-column:2;
+      grid-row:2;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+
+    .drive-now{
+      width:100%;
+      max-width:none;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:16px;
+    }
+
+    .drive-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.025);
+      color:rgba(255,255,255,.40);
+      font-size:12px;
+      font-weight:600;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+    }
+
+    .drive .track-title{
+      font-size:clamp(52px, 6vw, 86px);
+      min-height:1.2em;
+      letter-spacing:-.065em;
+    }
+
+    .drive .track-sub{
+      font-size:20px;
+      color:rgba(255,255,255,.42);
+    }
+
+    .drive-micro{
+      height:60px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .drive-micro .micro-dot{
+      width:8px;
+      height:8px;
+    }
+
+    .drive-bottom{
+      grid-column:2;
+      grid-row:3;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-end;
+      gap:16px;
+    }
+
+    .drive-controls{
+      width:100%;
+      max-width:540px;
+      display:grid;
+      grid-template-columns:88px 1fr 88px;
+      gap:18px;
+      align-items:center;
+    }
+
+    .drive .nav-btn{
+      width:78px;
+      height:78px;
+      border-radius:22px;
+      background:rgba(255,255,255,.02);
+      border:1px solid rgba(255,255,255,.05);
+      justify-self:center;
+    }
+
+    .drive .nav-btn svg{
+      width:34px;
+      height:34px;
+    }
+
+    .drive .play-btn{
+      width:136px;
+      height:136px;
+      border-radius:36px;
+      justify-self:center;
+    }
+
+    .drive .play-btn svg{
+      width:44px;
+      height:44px;
+    }
+
+    .drive-actions{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .drive .action-btn{
+      min-height:48px;
+      padding:0 18px;
+      font-size:15px;
+      font-weight:500;
+    }
+
+    .drive-right{
+      grid-column:3;
+      grid-row:2 / span 2;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      gap:16px;
+    }
+
+    .theme-panel,
+    .drive-card{
+      padding:16px;
+      border-radius:24px;
+      border:1px solid rgba(255,255,255,.07);
+      background:rgba(255,255,255,.03);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+    }
+
+    .theme-panel-title,
+    .drive-card-title{
+      color:rgba(255,255,255,.38);
+      font-size:12px;
+      font-weight:600;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      margin-bottom:12px;
+    }
+
+    .theme-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
     }
 
     .theme-chip{
@@ -473,14 +636,11 @@
       cursor:pointer;
       border:1px solid rgba(255,255,255,.16);
       box-shadow:0 0 0 1px rgba(255,255,255,.03);
-      background:#fff;
       padding:0;
       transition:transform .15s ease, border-color .2s ease, box-shadow .2s ease;
     }
 
-    .theme-chip:active{
-      transform:scale(.94);
-    }
+    .theme-chip:active{ transform:scale(.94); }
 
     .theme-chip.active{
       border-color:#fff;
@@ -490,18 +650,31 @@
     .theme-chip[data-theme="audi"]{
       background:linear-gradient(135deg, rgb(88,180,255), rgb(215,235,255));
     }
-
     .theme-chip[data-theme="porsche"]{
       background:linear-gradient(135deg, rgb(255,171,120), rgb(255,108,76));
     }
-
     .theme-chip[data-theme="bmw"]{
       background:linear-gradient(135deg, rgb(138,162,255), rgb(220,235,255));
     }
-
     .theme-chip[data-theme="stealth"]{
       background:linear-gradient(135deg, rgb(90,90,90), rgb(220,220,220));
     }
+
+    .drive-card-value{
+      color:#fff;
+      font-size:28px;
+      font-weight:600;
+      letter-spacing:-.04em;
+      margin-bottom:6px;
+    }
+
+    .drive-card-meta{
+      color:rgba(255,255,255,.34);
+      font-size:14px;
+      font-weight:500;
+    }
+
+    /* ---------- sheet ---------- */
 
     .sheet-backdrop{
       position:fixed;
@@ -589,9 +762,7 @@
       -ms-overflow-style:none;
     }
 
-    .track-list::-webkit-scrollbar{
-      display:none;
-    }
+    .track-list::-webkit-scrollbar{ display:none; }
 
     .track-item{
       width:100%;
@@ -609,13 +780,8 @@
       transition:background .18s ease, transform .14s ease;
     }
 
-    .track-item:hover{
-      background:rgba(255,255,255,.04);
-    }
-
-    .track-item:active{
-      transform:scale(.995);
-    }
+    .track-item:hover{ background:rgba(255,255,255,.04); }
+    .track-item:active{ transform:scale(.995); }
 
     .track-item.active{
       background:rgba(255,255,255,.055);
@@ -691,12 +857,8 @@
       transform:translateX(-50%) translateY(0);
     }
 
-    .landscape-drive .swipe-hint{
-      display:none;
-    }
-
     @media (orientation: landscape){
-      .phone{
+      .shell{
         max-width:100%;
         padding:
           calc(var(--safe-top) + 8px)
@@ -704,236 +866,13 @@
           calc(var(--safe-bottom) + 12px);
       }
 
-      .landscape-drive .top{
-        min-height:50px;
-        justify-content:flex-start;
-        align-items:flex-start;
-      }
-
-      .landscape-drive .logo{
-        font-size:18px;
-        letter-spacing:.32em;
-      }
-
-      .landscape-drive .content{
-        display:grid;
-        grid-template-columns:220px 1fr 180px;
-        grid-template-rows:auto 1fr auto;
-        gap:16px 18px;
-        align-items:stretch;
-      }
-
-      .landscape-drive .genres-wrap{
-        grid-column:1;
-        grid-row:1 / span 3;
-        margin-top:0;
-        justify-content:flex-start;
-        align-items:center;
-      }
-
-      .landscape-drive .genres{
-        width:100%;
-        flex-direction:column;
-        align-items:stretch;
-        gap:12px;
-        overflow:visible;
-        padding:0;
-      }
-
-      .landscape-drive .genre{
-        min-width:unset;
-        min-height:64px;
-        width:100%;
-        padding:0 22px;
-        font-size:20px;
-        font-weight:600;
-        letter-spacing:.08em;
-        justify-content:flex-start;
-        text-align:left;
-        background:rgba(255,255,255,.02);
-        border-color:rgba(255,255,255,.08);
-        border-radius:24px;
-      }
-
-      .landscape-drive .genre.active{
-        background:linear-gradient(to right, rgba(var(--theme-a),.10), rgba(255,255,255,.05));
-        border-color:rgba(var(--theme-c),.22);
-        box-shadow:
-          inset 0 1px 0 rgba(255,255,255,.05),
-          0 0 22px rgba(var(--theme-a),.08);
-      }
-
-      .landscape-drive .center{
-        grid-column:2;
-        grid-row:1 / span 2;
-        padding:0;
-      }
-
-      .landscape-drive .now-playing{
-        max-width:none;
-        width:100%;
-        height:100%;
-        justify-content:center;
-        gap:14px;
-      }
-
-      .landscape-drive .drive-badge{
-        display:inline-flex;
-        align-items:center;
-        justify-content:center;
-        padding:8px 14px;
-        border-radius:999px;
-        border:1px solid rgba(255,255,255,.08);
-        background:rgba(255,255,255,.025);
-        color:rgba(255,255,255,.40);
-        font-size:12px;
-        font-weight:600;
-        letter-spacing:.18em;
-        text-transform:uppercase;
-      }
-
-      .landscape-drive .track-title{
-        font-size:clamp(46px, 6vw, 82px);
-        min-height:1.2em;
-        letter-spacing:-.065em;
-      }
-
-      .landscape-drive .track-sub{
-        font-size:20px;
-        color:rgba(255,255,255,.42);
-      }
-
-      .landscape-drive .micro{
-        height:54px;
-        margin-top:4px;
-      }
-
-      .landscape-drive .micro-dot{
-        width:8px;
-        height:8px;
-      }
-
-      .landscape-drive .bottom{
-        grid-column:2;
-        grid-row:3;
-        gap:16px;
-        padding-bottom:0;
-      }
-
-      .landscape-drive .controls{
-        max-width:520px;
-        grid-template-columns:92px 1fr 92px;
-        gap:18px;
-      }
-
-      .landscape-drive .nav-btn{
-        width:78px;
-        height:78px;
-        border-radius:22px;
-        background:rgba(255,255,255,.02);
-        border:1px solid rgba(255,255,255,.05);
-      }
-
-      .landscape-drive .nav-btn svg{
-        width:34px;
-        height:34px;
-      }
-
-      .landscape-drive .play-btn{
-        width:134px;
-        height:134px;
-      }
-
-      .landscape-drive .play-btn svg{
-        width:42px;
-        height:42px;
-      }
-
-      .landscape-drive .actions{
-        gap:12px;
-      }
-
-      .landscape-drive .action-btn{
-        min-height:48px;
-        padding:0 18px;
-        font-size:15px;
-      }
-
-      .landscape-drive .drive-right{
-        display:flex;
-        grid-column:3;
-        grid-row:1 / span 3;
-        flex-direction:column;
-        justify-content:space-between;
-        gap:16px;
-      }
-
-      .landscape-drive .theme-panel{
-        display:flex;
-        flex-direction:column;
-        gap:12px;
-        padding:16px;
-        border-radius:24px;
-        border:1px solid rgba(255,255,255,.07);
-        background:rgba(255,255,255,.03);
-        backdrop-filter:blur(10px);
-        -webkit-backdrop-filter:blur(10px);
-      }
-
-      .landscape-drive .theme-panel-title{
-        color:rgba(255,255,255,.38);
-        font-size:12px;
-        font-weight:600;
-        letter-spacing:.16em;
-        text-transform:uppercase;
-      }
-
-      .landscape-drive .theme-row{
-        display:flex;
-        gap:10px;
-        flex-wrap:wrap;
-      }
-
-      .landscape-drive .drive-side{
-        display:flex;
-        flex-direction:column;
-        gap:12px;
-        padding:16px;
-        border-radius:24px;
-        border:1px solid rgba(255,255,255,.07);
-        background:rgba(255,255,255,.03);
-        backdrop-filter:blur(10px);
-        -webkit-backdrop-filter:blur(10px);
-      }
-
-      .landscape-drive .drive-side-title{
-        color:rgba(255,255,255,.38);
-        font-size:12px;
-        font-weight:600;
-        letter-spacing:.16em;
-        text-transform:uppercase;
-      }
-
-      .landscape-drive .drive-side-value{
-        color:#fff;
-        font-size:28px;
-        font-weight:600;
-        letter-spacing:-.04em;
-      }
-
-      .landscape-drive .drive-side-meta{
-        color:rgba(255,255,255,.34);
-        font-size:14px;
-        font-weight:500;
-      }
-
-      .landscape-drive .sheet-card{
-        max-width:900px;
-      }
+      .portrait{ display:none; }
+      .drive{ display:grid; }
+      .sheet-card{ max-width:920px; }
     }
 
     @media (min-width:431px){
-      .phone{
+      .shell{
         box-shadow:0 0 70px rgba(0,0,0,.34);
       }
     }
@@ -943,35 +882,34 @@
   <canvas id="bgCanvas"></canvas>
 
   <div class="app">
-    <div class="phone" id="phone">
-      <div class="gesture-layer" id="gestureLayer" aria-hidden="true"></div>
+    <div class="shell">
+      <div class="gesture-layer" id="gestureLayer"></div>
 
-      <div class="top">
-        <div class="logo" id="logo">RESONANCE</div>
-      </div>
-
-      <div class="content">
-        <div class="genres-wrap">
-          <div class="genres" id="genres"></div>
+      <!-- PORTRAIT -->
+      <div class="portrait" id="portraitLayout">
+        <div class="portrait-top">
+          <div class="logo" id="logoPortrait">RESONANCE</div>
         </div>
 
-        <div class="center">
-          <div class="now-playing">
-            <div class="drive-badge" id="driveBadge">Drive Mode</div>
+        <div class="portrait-genres-wrap">
+          <div class="portrait-genres" id="portraitGenres"></div>
+        </div>
 
-            <div class="track-title" id="trackTitle">lofi 1</div>
+        <div class="portrait-center">
+          <div class="portrait-now">
+            <div class="track-title" id="trackTitlePortrait">lofi 1</div>
 
             <div class="track-sub">
-              <span id="trackCounter">1 / 1</span>
+              <span id="trackCounterPortrait">1 / 1</span>
               <span class="dot-sep"></span>
-              <span id="trackTime">00:00</span>
+              <span id="trackTimePortrait">00:00</span>
             </div>
 
-            <div class="micro" aria-hidden="true">
+            <div class="portrait-micro">
               <div class="micro-dots">
-                <span class="micro-dot" id="dot1"></span>
-                <span class="micro-dot" id="dot2"></span>
-                <span class="micro-dot" id="dot3"></span>
+                <span class="micro-dot micro-p"></span>
+                <span class="micro-dot micro-p"></span>
+                <span class="micro-dot micro-p"></span>
               </div>
             </div>
 
@@ -983,30 +921,86 @@
           </div>
         </div>
 
-        <div class="bottom">
-          <div class="controls">
-            <button class="nav-btn" id="prevBtn" aria-label="Предыдущий трек">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <div class="portrait-bottom">
+          <div class="portrait-controls">
+            <button class="nav-btn" id="prevBtnPortrait" aria-label="Предыдущий трек">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
                 <path d="M15.5 18L9.5 12L15.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
 
-            <button class="play-btn" id="playBtn" aria-label="Воспроизвести или пауза">
-              <svg id="playIcon" width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M9 6.7v10.6c0 .7.8 1.14 1.4.78l7.9-5.3a.93.93 0 0 0 0-1.56l-7.9-5.3A.93.93 0 0 0 9 6.7Z" fill="currentColor"/>
-              </svg>
+            <button class="play-btn" id="playBtnPortrait" aria-label="Воспроизвести или пауза">
+              <svg class="play-icon" width="34" height="34" viewBox="0 0 24 24" fill="none"></svg>
             </button>
 
-            <button class="nav-btn" id="nextBtn" aria-label="Следующий трек">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <button class="nav-btn" id="nextBtnPortrait" aria-label="Следующий трек">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
                 <path d="M8.5 18L14.5 12L8.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
           </div>
 
-          <div class="actions">
-            <button class="action-btn" id="offlineBtn">Скачать офлайн</button>
-            <button class="action-btn" id="queueTrigger">Список треков</button>
+          <div class="portrait-actions">
+            <button class="action-btn" id="offlineBtnPortrait">Скачать офлайн</button>
+            <button class="action-btn" id="queueBtnPortrait">Список треков</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LANDSCAPE DRIVE -->
+      <div class="drive" id="driveLayout">
+        <div class="drive-top">
+          <div class="logo" id="logoDrive">RESONANCE</div>
+        </div>
+
+        <div class="drive-left">
+          <div class="drive-genres" id="driveGenres"></div>
+        </div>
+
+        <div class="drive-center">
+          <div class="drive-now">
+            <div class="drive-badge">Drive Mode</div>
+
+            <div class="track-title" id="trackTitleDrive">lofi 1</div>
+
+            <div class="track-sub">
+              <span id="trackCounterDrive">1 / 1</span>
+              <span class="dot-sep"></span>
+              <span id="trackTimeDrive">00:00</span>
+            </div>
+
+            <div class="drive-micro">
+              <div class="micro-dots">
+                <span class="micro-dot micro-d"></span>
+                <span class="micro-dot micro-d"></span>
+                <span class="micro-dot micro-d"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="drive-bottom">
+          <div class="drive-controls">
+            <button class="nav-btn" id="prevBtnDrive" aria-label="Предыдущий трек">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                <path d="M15.5 18L9.5 12L15.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <button class="play-btn" id="playBtnDrive" aria-label="Воспроизвести или пауза">
+              <svg class="play-icon" width="44" height="44" viewBox="0 0 24 24" fill="none"></svg>
+            </button>
+
+            <button class="nav-btn" id="nextBtnDrive" aria-label="Следующий трек">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
+                <path d="M8.5 18L14.5 12L8.5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="drive-actions">
+            <button class="action-btn" id="offlineBtnDrive">Скачать офлайн</button>
+            <button class="action-btn" id="queueBtnDrive">Список треков</button>
           </div>
         </div>
 
@@ -1021,16 +1015,16 @@
             </div>
           </div>
 
-          <div class="drive-side">
-            <div class="drive-side-title">Driver View</div>
-            <div class="drive-side-value" id="driveGenreLabel">Lo-Fi</div>
-            <div class="drive-side-meta" id="driveOfflineStatus">Онлайн</div>
+          <div class="drive-card">
+            <div class="drive-card-title">Genre</div>
+            <div class="drive-card-value" id="driveGenreLabel">Lo-Fi</div>
+            <div class="drive-card-meta" id="driveOfflineStatus">Онлайн</div>
           </div>
 
-          <div class="drive-side">
-            <div class="drive-side-title">Gesture</div>
-            <div class="drive-side-value">← →</div>
-            <div class="drive-side-meta">Свайп по экрану для треков</div>
+          <div class="drive-card">
+            <div class="drive-card-title">Gesture</div>
+            <div class="drive-card-value">← →</div>
+            <div class="drive-card-meta">Свайп по экрану • двойной тап — play</div>
           </div>
         </div>
       </div>
@@ -1075,38 +1069,56 @@
       stealth: { a: "205,205,205", b: "118,118,118", c: "245,245,245" }
     };
 
-    const phone = document.getElementById("phone");
     const audio = document.getElementById("audio");
-    const genresEl = document.getElementById("genres");
-    const playBtn = document.getElementById("playBtn");
-    const playIcon = document.getElementById("playIcon");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const logo = document.getElementById("logo");
-
-    const trackTitleEl = document.getElementById("trackTitle");
-    const trackCounterEl = document.getElementById("trackCounter");
-    const trackTimeEl = document.getElementById("trackTime");
-
-    const offlineBtn = document.getElementById("offlineBtn");
-    const queueTrigger = document.getElementById("queueTrigger");
+    const gestureLayer = document.getElementById("gestureLayer");
     const sheet = document.getElementById("sheet");
     const sheetBackdrop = document.getElementById("sheetBackdrop");
     const sheetTitle = document.getElementById("sheetTitle");
     const sheetMeta = document.getElementById("sheetMeta");
     const trackListEl = document.getElementById("trackList");
     const toastEl = document.getElementById("toast");
-    const gestureLayer = document.getElementById("gestureLayer");
-
-    const dot1 = document.getElementById("dot1");
-    const dot2 = document.getElementById("dot2");
-    const dot3 = document.getElementById("dot3");
-
-    const driveGenreLabel = document.getElementById("driveGenreLabel");
-    const driveOfflineStatus = document.getElementById("driveOfflineStatus");
-
     const canvas = document.getElementById("bgCanvas");
     const ctx = canvas.getContext("2d", { alpha: true });
+
+    const ui = {
+      portraitGenres: document.getElementById("portraitGenres"),
+      driveGenres: document.getElementById("driveGenres"),
+      trackTitlePortrait: document.getElementById("trackTitlePortrait"),
+      trackCounterPortrait: document.getElementById("trackCounterPortrait"),
+      trackTimePortrait: document.getElementById("trackTimePortrait"),
+      trackTitleDrive: document.getElementById("trackTitleDrive"),
+      trackCounterDrive: document.getElementById("trackCounterDrive"),
+      trackTimeDrive: document.getElementById("trackTimeDrive"),
+      driveGenreLabel: document.getElementById("driveGenreLabel"),
+      driveOfflineStatus: document.getElementById("driveOfflineStatus"),
+      logoPortrait: document.getElementById("logoPortrait"),
+      logoDrive: document.getElementById("logoDrive"),
+      playBtns: [
+        document.getElementById("playBtnPortrait"),
+        document.getElementById("playBtnDrive")
+      ],
+      prevBtns: [
+        document.getElementById("prevBtnPortrait"),
+        document.getElementById("prevBtnDrive")
+      ],
+      nextBtns: [
+        document.getElementById("nextBtnPortrait"),
+        document.getElementById("nextBtnDrive")
+      ],
+      queueBtns: [
+        document.getElementById("queueBtnPortrait"),
+        document.getElementById("queueBtnDrive")
+      ],
+      offlineBtns: [
+        document.getElementById("offlineBtnPortrait"),
+        document.getElementById("offlineBtnDrive")
+      ],
+      microDots: [
+        ...document.querySelectorAll(".micro-p"),
+        ...document.querySelectorAll(".micro-d")
+      ],
+      playIcons: [...document.querySelectorAll(".play-icon")]
+    };
 
     let currentGenre = GENRES[0];
     let currentTrackList = [];
@@ -1114,12 +1126,10 @@
     let currentTrackTitle = "lofi 1";
     let sheetOpen = false;
     let toastTimer = null;
-
     let touchStartX = 0;
     let touchStartY = 0;
     let touchStartTime = 0;
     let lastTap = 0;
-
     let fakeEnergy = 0.06;
     let bgPulse = 0;
     let cachedManifest = loadManifest();
@@ -1127,7 +1137,6 @@
     let currentTheme = localStorage.getItem(THEME_KEY) || "audi";
 
     const localTrackCache = {};
-
     const particles = Array.from({ length: 34 }, () => ({
       x: Math.random(),
       y: Math.random(),
@@ -1148,6 +1157,42 @@
       localStorage.setItem(MANIFEST_KEY, JSON.stringify(cachedManifest));
     }
 
+    function createManifest(){
+      const iconSVG = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <rect width="512" height="512" rx="120" fill="#000"/>
+          <text x="256" y="282" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="54" letter-spacing="12">R</text>
+        </svg>
+      `;
+      const iconURL = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(iconSVG);
+      const manifest = {
+        name: APP_NAME,
+        short_name: APP_NAME,
+        start_url: "./",
+        display: "standalone",
+        background_color: "#000000",
+        theme_color: "#000000",
+        icons: [
+          { src: iconURL, sizes: "192x192", type: "image/svg+xml", purpose: "any" },
+          { src: iconURL, sizes: "512x512", type: "image/svg+xml", purpose: "any" }
+        ]
+      };
+      const blob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("link");
+      link.rel = "manifest";
+      link.href = url;
+      document.head.appendChild(link);
+    }
+
+    async function registerSW(){
+      if (!("serviceWorker" in navigator)) return;
+      if (location.protocol === "file:") return;
+      try{
+        await navigator.serviceWorker.register("./sw.js");
+      }catch(e){}
+    }
+
     function applyTheme(name){
       const theme = THEMES[name] || THEMES.audi;
       currentTheme = name;
@@ -1162,65 +1207,29 @@
       });
     }
 
-    function updateOrientationMode(){
-      const isLandscape = window.matchMedia("(orientation: landscape)").matches;
-      phone.classList.toggle("landscape-drive", isLandscape);
-    }
-
-    function createManifest(){
-      const iconSVG = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <rect width="512" height="512" rx="120" fill="#000"/>
-          <text x="256" y="282" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="54" letter-spacing="12">R</text>
-        </svg>
-      `;
-      const iconURL = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(iconSVG);
-
-      const manifest = {
-        name: APP_NAME,
-        short_name: APP_NAME,
-        start_url: "./",
-        display: "standalone",
-        background_color: "#000000",
-        theme_color: "#000000",
-        icons: [
-          { src: iconURL, sizes: "192x192", type: "image/svg+xml", purpose: "any" },
-          { src: iconURL, sizes: "512x512", type: "image/svg+xml", purpose: "any" }
-        ]
-      };
-
-      const manifestBlob = new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" });
-      const manifestURL = URL.createObjectURL(manifestBlob);
-      const link = document.createElement("link");
-      link.rel = "manifest";
-      link.href = manifestURL;
-      document.head.appendChild(link);
-    }
-
-    async function registerSW(){
-      if (!("serviceWorker" in navigator)) return;
-      if (location.protocol === "file:") return;
-      try{
-        await navigator.serviceWorker.register("./sw.js");
-      }catch(e){}
+    function initThemes(){
+      document.querySelectorAll(".theme-chip").forEach(btn => {
+        btn.addEventListener("click", () => applyTheme(btn.dataset.theme));
+      });
+      applyTheme(currentTheme);
     }
 
     function setPlayIcon(paused){
-      playIcon.innerHTML = paused
+      const html = paused
         ? '<path d="M9 6.7v10.6c0 .7.8 1.14 1.4.78l7.9-5.3a.93.93 0 0 0 0-1.56l-7.9-5.3A.93.93 0 0 0 9 6.7Z" fill="currentColor"/>'
         : '<path d="M8 6.5v11M16 6.5v11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>';
 
-      playBtn.classList.toggle("playing", !paused);
-      logo.classList.toggle("playing", !paused);
+      ui.playIcons.forEach(el => el.innerHTML = html);
+      ui.playBtns.forEach(el => el.classList.toggle("playing", !paused));
+      ui.logoPortrait.classList.toggle("playing", !paused);
+      ui.logoDrive.classList.toggle("playing", !paused);
     }
 
     function showToast(text){
       clearTimeout(toastTimer);
       toastEl.textContent = text;
       toastEl.classList.add("show");
-      toastTimer = setTimeout(() => {
-        toastEl.classList.remove("show");
-      }, 1500);
+      toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1500);
     }
 
     function openSheet(){
@@ -1261,41 +1270,56 @@
     }
 
     function renderGenres(){
-      genresEl.innerHTML = "";
+      ui.portraitGenres.innerHTML = "";
+      ui.driveGenres.innerHTML = "";
 
       GENRES.forEach((genre) => {
-        const button = document.createElement("button");
-        button.className = "genre";
-        button.dataset.genreId = genre.id;
-        button.textContent = genre.name;
+        const makeBtn = () => {
+          const button = document.createElement("button");
+          button.className = "genre";
+          button.textContent = genre.name;
+          if (genre.id === currentGenre.id) button.classList.add("active");
+          button.addEventListener("click", async () => {
+            await selectGenre(genre, true);
+          });
+          return button;
+        };
 
-        if (genre.id === currentGenre.id) button.classList.add("active");
-
-        button.addEventListener("click", async () => {
-          await selectGenre(genre, true);
-        });
-
-        genresEl.appendChild(button);
+        ui.portraitGenres.appendChild(makeBtn());
+        ui.driveGenres.appendChild(makeBtn());
       });
     }
 
     function updateNowPlayingUI(){
-      trackTitleEl.style.opacity = ".72";
-      trackTitleEl.style.transform = "translateY(2px)";
+      const setTitle = (el) => {
+        el.style.opacity = ".72";
+        el.style.transform = "translateY(2px)";
+        requestAnimationFrame(() => {
+          el.textContent = currentTrackTitle;
+          el.style.opacity = "1";
+          el.style.transform = "translateY(0)";
+        });
+      };
 
-      requestAnimationFrame(() => {
-        trackTitleEl.textContent = currentTrackTitle;
-        trackTitleEl.style.opacity = "1";
-        trackTitleEl.style.transform = "translateY(0)";
-      });
+      setTitle(ui.trackTitlePortrait);
+      setTitle(ui.trackTitleDrive);
 
-      trackCounterEl.textContent = currentTrackList.length
+      const counter = currentTrackList.length
         ? `${currentLocalIndex + 1} / ${currentTrackList.length}`
         : "—";
 
+      ui.trackCounterPortrait.textContent = counter;
+      ui.trackCounterDrive.textContent = counter;
+      ui.driveGenreLabel.textContent = currentGenre.name;
+
       sheetTitle.textContent = currentGenre.name;
       sheetMeta.textContent = `${currentTrackList.length} треков`;
-      driveGenreLabel.textContent = currentGenre.name;
+    }
+
+    function updateTime(){
+      const text = formatTime(audio.currentTime || 0);
+      ui.trackTimePortrait.textContent = text;
+      ui.trackTimeDrive.textContent = text;
     }
 
     function renderTrackList(){
@@ -1365,11 +1389,8 @@
         const url = `./${genre.prefix}-${i}.mp3`;
         const exists = await fileExists(url);
 
-        if (exists) {
-          tracks.push(url);
-        } else {
-          break;
-        }
+        if (exists) tracks.push(url);
+        else break;
       }
 
       if (tracks.length){
@@ -1404,11 +1425,13 @@
       return true;
     }
 
-    async function updateOfflineButton(){
+    async function updateOfflineButtons(){
       const ready = await isGenreCachedOffline(currentGenre);
-      offlineBtn.classList.toggle("ready", ready);
-      offlineBtn.textContent = ready ? "Офлайн готов" : "Скачать офлайн";
-      driveOfflineStatus.textContent = ready ? "Офлайн готов" : "Онлайн";
+      ui.offlineBtns.forEach(btn => {
+        btn.classList.toggle("ready", ready);
+        btn.textContent = ready ? "Офлайн готов" : "Скачать офлайн";
+      });
+      ui.driveOfflineStatus.textContent = ready ? "Офлайн готов" : "Онлайн";
     }
 
     async function cacheGenreOffline(genre){
@@ -1424,8 +1447,10 @@
         return;
       }
 
-      offlineBtn.textContent = "Скачивание…";
-      offlineBtn.disabled = true;
+      ui.offlineBtns.forEach(btn => {
+        btn.textContent = "Скачивание…";
+        btn.disabled = true;
+      });
 
       try{
         for (const url of urls){
@@ -1437,12 +1462,12 @@
           await cache.put(url, res.clone());
         }
 
-        await updateOfflineButton();
+        await updateOfflineButtons();
         showToast("Жанр сохранён офлайн");
       }catch(e){
         showToast("Не удалось скачать");
       }finally{
-        offlineBtn.disabled = false;
+        ui.offlineBtns.forEach(btn => btn.disabled = false);
       }
     }
 
@@ -1475,20 +1500,21 @@
       if (!currentTrackList.length){
         currentTrackTitle = genre.name;
         updateNowPlayingUI();
-        trackTimeEl.textContent = navigator.onLine ? "Нет файлов" : "Нет офлайна";
+        ui.trackTimePortrait.textContent = navigator.onLine ? "Нет файлов" : "Нет офлайна";
+        ui.trackTimeDrive.textContent = navigator.onLine ? "Нет файлов" : "Нет офлайна";
         audio.pause();
         audio.removeAttribute("src");
         audio.load();
         setPlayIcon(true);
         renderTrackList();
-        await updateOfflineButton();
+        await updateOfflineButtons();
         showToast(navigator.onLine ? "Файлы не найдены" : "Сначала скачай жанр");
         return;
       }
 
       currentLocalIndex = 0;
       await loadCurrentLocalTrack(autoplay);
-      await updateOfflineButton();
+      await updateOfflineButtons();
     }
 
     async function loadCurrentLocalTrack(autoplay = true){
@@ -1546,10 +1572,6 @@
       return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
     }
 
-    function updateTime(){
-      trackTimeEl.textContent = formatTime(audio.currentTime || 0);
-    }
-
     function createArtworkDataURL(text){
       const safe = String(text || APP_NAME).slice(0, 24);
       return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`
@@ -1600,28 +1622,30 @@
       setTimeout(() => btn.classList.remove("tap"), 140);
     }
 
-    playBtn.addEventListener("click", togglePlayback);
+    function bindControls(){
+      ui.playBtns.forEach(btn => btn.addEventListener("click", togglePlayback));
 
-    prevBtn.addEventListener("click", async () => {
-      tapButton(prevBtn);
-      await prevTrack();
-    });
+      ui.prevBtns.forEach(btn => btn.addEventListener("click", async () => {
+        tapButton(btn);
+        await prevTrack();
+      }));
 
-    nextBtn.addEventListener("click", async () => {
-      tapButton(nextBtn);
-      await nextTrack();
-    });
+      ui.nextBtns.forEach(btn => btn.addEventListener("click", async () => {
+        tapButton(btn);
+        await nextTrack();
+      }));
 
-    offlineBtn.addEventListener("click", async () => {
-      await cacheGenreOffline(currentGenre);
-    });
+      ui.offlineBtns.forEach(btn => btn.addEventListener("click", async () => {
+        await cacheGenreOffline(currentGenre);
+      }));
 
-    queueTrigger.addEventListener("click", () => {
-      if (sheetOpen) closeSheet();
-      else openSheet();
-    });
+      ui.queueBtns.forEach(btn => btn.addEventListener("click", () => {
+        if (sheetOpen) closeSheet();
+        else openSheet();
+      }));
 
-    sheetBackdrop.addEventListener("click", closeSheet);
+      sheetBackdrop.addEventListener("click", closeSheet);
+    }
 
     async function togglePlayback(){
       if (!audio.src){
@@ -1665,10 +1689,7 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    window.addEventListener("resize", () => {
-      resizeCanvas();
-      updateOrientationMode();
-    });
+    window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
 
     function getEnergy(){
@@ -1683,7 +1704,7 @@
       const e = getEnergy();
 
       if (audio.paused || !audio.src){
-        [dot1, dot2, dot3].forEach((d) => {
+        ui.microDots.forEach((d) => {
           d.classList.remove("live");
           d.style.transform = "scale(1)";
           d.style.opacity = ".42";
@@ -1691,21 +1712,17 @@
         return;
       }
 
-      const a = 0.92 + Math.sin(t * 2.4) * 0.10 + e * 0.12;
-      const b = 1.06 + Math.sin(t * 2.4 + 0.7) * 0.12 + e * 0.16;
-      const c = 0.92 + Math.sin(t * 2.4 + 1.4) * 0.10 + e * 0.12;
+      const values = [
+        0.92 + Math.sin(t * 2.4) * 0.10 + e * 0.12,
+        1.06 + Math.sin(t * 2.4 + 0.7) * 0.12 + e * 0.16,
+        0.92 + Math.sin(t * 2.4 + 1.4) * 0.10 + e * 0.12
+      ];
 
-      dot1.classList.add("live");
-      dot2.classList.add("live");
-      dot3.classList.add("live");
-
-      dot1.style.transform = `scale(${a})`;
-      dot2.style.transform = `scale(${b})`;
-      dot3.style.transform = `scale(${c})`;
-
-      dot1.style.opacity = String(0.42 + e * 0.8);
-      dot2.style.opacity = String(0.52 + e * 0.9);
-      dot3.style.opacity = String(0.42 + e * 0.8);
+      ui.microDots.forEach((d, i) => {
+        d.classList.add("live");
+        d.style.transform = `scale(${values[i % 3]})`;
+        d.style.opacity = String((i % 3 === 1 ? 0.52 : 0.42) + e * (i % 3 === 1 ? 0.9 : 0.8));
+      });
     }
 
     function drawBackground(time){
@@ -1720,32 +1737,31 @@
       const themeA = getComputedStyle(document.documentElement).getPropertyValue("--theme-a").trim();
       const themeB = getComputedStyle(document.documentElement).getPropertyValue("--theme-b").trim();
       const themeC = getComputedStyle(document.documentElement).getPropertyValue("--theme-c").trim();
-
       const isLandscape = window.matchMedia("(orientation: landscape)").matches;
 
       const sphere1 = ctx.createRadialGradient(
-        w * (isLandscape ? 0.46 : 0.30),
+        w * (isLandscape ? 0.44 : 0.30),
         h * (isLandscape ? 0.30 : 0.30),
         0,
-        w * (isLandscape ? 0.46 : 0.30),
+        w * (isLandscape ? 0.44 : 0.30),
         h * (isLandscape ? 0.30 : 0.30),
-        Math.min(w, h) * (isLandscape ? 0.48 : 0.38)
+        Math.min(w, h) * (isLandscape ? 0.52 : 0.40)
       );
-      sphere1.addColorStop(0, `rgba(${themeA},${0.12 + bgPulse * 0.16})`);
+      sphere1.addColorStop(0, `rgba(${themeA},${0.14 + bgPulse * 0.18})`);
       sphere1.addColorStop(0.35, `rgba(${themeA},${0.05 + bgPulse * 0.07})`);
       sphere1.addColorStop(1, `rgba(${themeA},0)`);
       ctx.fillStyle = sphere1;
       ctx.fillRect(0, 0, w, h);
 
       const sphere2 = ctx.createRadialGradient(
-        w * (isLandscape ? 0.72 : 0.77),
-        h * (isLandscape ? 0.58 : 0.68),
+        w * (isLandscape ? 0.76 : 0.77),
+        h * (isLandscape ? 0.66 : 0.68),
         0,
-        w * (isLandscape ? 0.72 : 0.77),
-        h * (isLandscape ? 0.58 : 0.68),
-        Math.min(w, h) * (isLandscape ? 0.52 : 0.42)
+        w * (isLandscape ? 0.76 : 0.77),
+        h * (isLandscape ? 0.66 : 0.68),
+        Math.min(w, h) * (isLandscape ? 0.56 : 0.44)
       );
-      sphere2.addColorStop(0, `rgba(${themeB},${0.10 + bgPulse * 0.15})`);
+      sphere2.addColorStop(0, `rgba(${themeB},${0.12 + bgPulse * 0.16})`);
       sphere2.addColorStop(0.34, `rgba(${themeB},${0.04 + bgPulse * 0.06})`);
       sphere2.addColorStop(1, `rgba(${themeB},0)`);
       ctx.fillStyle = sphere2;
@@ -1753,19 +1769,19 @@
 
       const sphere3 = ctx.createRadialGradient(
         w * (isLandscape ? 0.58 : 0.58),
-        h * (isLandscape ? 0.48 : 0.52),
+        h * (isLandscape ? 0.46 : 0.52),
         0,
         w * (isLandscape ? 0.58 : 0.58),
-        h * (isLandscape ? 0.48 : 0.52),
-        Math.min(w, h) * (isLandscape ? 0.26 : 0.22)
+        h * (isLandscape ? 0.46 : 0.52),
+        Math.min(w, h) * (isLandscape ? 0.30 : 0.24)
       );
-      sphere3.addColorStop(0, `rgba(${themeC},${0.07 + e * 0.12})`);
+      sphere3.addColorStop(0, `rgba(${themeC},${0.08 + e * 0.12})`);
       sphere3.addColorStop(0.4, `rgba(${themeC},${0.02 + e * 0.05})`);
       sphere3.addColorStop(1, `rgba(${themeC},0)`);
       ctx.fillStyle = sphere3;
       ctx.fillRect(0, 0, w, h);
 
-      const lineY = h * .50;
+      const lineY = h * .52;
       const line = ctx.createLinearGradient(w * .18, lineY, w * .82, lineY);
       line.addColorStop(0, `rgba(${themeA},0)`);
       line.addColorStop(.5, `rgba(255,255,255,${0.05 + e * 0.09})`);
@@ -1774,18 +1790,17 @@
       ctx.fillRect(w * .18, lineY - .5, w * .64, 1);
 
       if (isLandscape){
-        const lane = ctx.createLinearGradient(w * 0.50, 0, w * 0.78, 0);
+        const lane = ctx.createLinearGradient(w * 0.46, 0, w * 0.74, 0);
         lane.addColorStop(0, `rgba(${themeA},0)`);
         lane.addColorStop(.55, `rgba(${themeA},${0.07 + e * 0.10})`);
         lane.addColorStop(1, `rgba(${themeB},0)`);
         ctx.fillStyle = lane;
-        ctx.fillRect(w * 0.42, h * 0.16, w * 0.30, h * 0.68);
+        ctx.fillRect(w * 0.40, h * 0.14, w * 0.30, h * 0.72);
       }
 
       for (const p of particles){
         const x = p.x * w + Math.sin(t * p.drift + p.y * 8) * 8;
         const y = p.y * h + Math.cos(t * p.drift + p.x * 7) * 8;
-
         ctx.beginPath();
         ctx.arc(x, y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,255,255,${p.a * (0.9 + bgPulse * 1.1)})`;
@@ -1854,22 +1869,15 @@
       });
     }
 
-    function initThemes(){
-      document.querySelectorAll(".theme-chip").forEach(btn => {
-        btn.addEventListener("click", () => applyTheme(btn.dataset.theme));
-      });
-      applyTheme(currentTheme);
-    }
-
     async function init(){
       createManifest();
       await registerSW();
       initThemes();
+      bindControls();
       renderGenres();
       setPlayIcon(true);
       updateNowPlayingUI();
       updateTime();
-      updateOrientationMode();
       requestAnimationFrame(drawBackground);
       setupGestures();
       initWarmup();
