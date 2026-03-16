@@ -83,6 +83,116 @@
       color:inherit;
     }
 
+
+    body[data-theme="audi"]{
+      background:
+        radial-gradient(circle at 18% 18%, rgba(84,170,255,.12), transparent 26%),
+        radial-gradient(circle at 82% 74%, rgba(175,232,255,.10), transparent 30%),
+        linear-gradient(180deg, #05070d, #0b121b 46%, #010203);
+    }
+
+    body[data-theme="porsche"]{
+      background:
+        radial-gradient(circle at 22% 16%, rgba(255,156,84,.14), transparent 26%),
+        radial-gradient(circle at 78% 72%, rgba(255,209,154,.09), transparent 30%),
+        linear-gradient(180deg, #0f0704, #1d1008 46%, #050302);
+    }
+
+    body[data-theme="mercedes"]{
+      background:
+        radial-gradient(circle at 20% 16%, rgba(255,255,255,.08), transparent 24%),
+        radial-gradient(circle at 80% 72%, rgba(210,219,229,.09), transparent 28%),
+        linear-gradient(180deg, #090a0c, #111419 46%, #040506);
+    }
+
+    body[data-theme="bmw"]{
+      background:
+        radial-gradient(circle at 18% 18%, rgba(68,158,255,.14), transparent 26%),
+        radial-gradient(circle at 80% 72%, rgba(96,224,255,.10), transparent 30%),
+        linear-gradient(180deg, #05070c, #09111d 46%, #010204);
+    }
+
+    body[data-theme="audi"] .hero-orb{
+      background:
+        radial-gradient(circle at 50% 42%, rgba(174,231,255,.26), rgba(96,190,255,.11) 42%, rgba(96,190,255,0) 72%);
+      filter:blur(20px);
+    }
+
+    body[data-theme="porsche"] .hero-orb{
+      background:
+        radial-gradient(circle at 46% 42%, rgba(255,206,146,.26), rgba(255,148,78,.13) 40%, rgba(255,148,78,0) 70%);
+      filter:blur(24px);
+    }
+
+    body[data-theme="mercedes"] .hero-orb{
+      background:
+        radial-gradient(circle at 50% 42%, rgba(255,255,255,.18), rgba(190,198,208,.10) 42%, rgba(190,198,208,0) 72%);
+      filter:blur(18px);
+    }
+
+    body[data-theme="bmw"] .hero-orb{
+      background:
+        radial-gradient(circle at 50% 42%, rgba(96,224,255,.24), rgba(68,158,255,.12) 40%, rgba(68,158,255,0) 70%);
+      filter:blur(22px);
+    }
+
+    body[data-theme="audi"] .play-btn.is-playing{
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.10),
+        0 28px 56px rgba(0,0,0,.46),
+        0 0 0 1px rgba(255,255,255,.02),
+        0 0 56px rgba(96,190,255,.22),
+        0 0 96px rgba(96,190,255,.08);
+    }
+
+    body[data-theme="porsche"] .play-btn.is-playing{
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.10),
+        0 28px 56px rgba(0,0,0,.46),
+        0 0 0 1px rgba(255,255,255,.02),
+        0 0 60px rgba(255,148,78,.26),
+        0 0 108px rgba(255,148,78,.10);
+    }
+
+    body[data-theme="mercedes"] .play-btn.is-playing{
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.12),
+        0 28px 56px rgba(0,0,0,.46),
+        0 0 0 1px rgba(255,255,255,.03),
+        0 0 46px rgba(190,198,208,.22),
+        0 0 88px rgba(190,198,208,.08);
+    }
+
+    body[data-theme="bmw"] .play-btn.is-playing{
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.10),
+        0 28px 56px rgba(0,0,0,.46),
+        0 0 0 1px rgba(255,255,255,.02),
+        0 0 62px rgba(68,158,255,.24),
+        0 0 108px rgba(96,224,255,.08);
+    }
+
+    body[data-theme="audi"] .genre-btn.active{
+      background:linear-gradient(180deg, rgba(96,190,255,.18), rgba(255,255,255,.03));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 12px 28px rgba(96,190,255,.14);
+    }
+
+    body[data-theme="porsche"] .genre-btn.active{
+      background:linear-gradient(180deg, rgba(255,148,78,.20), rgba(255,255,255,.03));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 12px 28px rgba(255,148,78,.16);
+    }
+
+    body[data-theme="mercedes"] .genre-btn.active{
+      background:linear-gradient(180deg, rgba(190,198,208,.18), rgba(255,255,255,.03));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 12px 28px rgba(190,198,208,.14);
+    }
+
+    body[data-theme="bmw"] .genre-btn.active{
+      background:linear-gradient(180deg, rgba(68,158,255,.18), rgba(255,255,255,.03));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 12px 28px rgba(68,158,255,.16);
+    }
+
+
     #bgCanvas{
       position:fixed;
       inset:0;
@@ -1405,6 +1515,8 @@
       Object.entries(theme.css).forEach(([property, value]) => {
         document.documentElement.style.setProperty(property, value);
       });
+
+      document.body.setAttribute("data-theme", state.themeKey);
 
       const themeColorMeta = document.querySelector('meta[name="theme-color"]');
       if (themeColorMeta) themeColorMeta.setAttribute("content", theme.metaColor);
