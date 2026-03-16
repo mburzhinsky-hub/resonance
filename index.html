@@ -17,10 +17,8 @@
       --muted:rgba(255,255,255,.34);
       --muted-2:rgba(255,255,255,.18);
       --line:rgba(255,255,255,.08);
-      --line-2:rgba(255,255,255,.14);
       --panel:rgba(255,255,255,.04);
       --panel-2:rgba(255,255,255,.06);
-      --accent:rgba(255,255,255,.92);
       --safe-top:max(14px, env(safe-area-inset-top));
       --safe-bottom:max(18px, env(safe-area-inset-bottom));
     }
@@ -177,8 +175,7 @@
         background .2s ease,
         border-color .2s ease,
         box-shadow .2s ease,
-        transform .14s ease,
-        opacity .2s ease;
+        transform .14s ease;
       white-space:nowrap;
       backdrop-filter:blur(8px);
       -webkit-backdrop-filter:blur(8px);
@@ -349,8 +346,7 @@
       transition:
         transform .14s ease,
         color .2s ease,
-        background .2s ease,
-        opacity .2s ease;
+        background .2s ease;
       justify-self:center;
       position:relative;
       z-index:5;
@@ -476,7 +472,7 @@
       z-index:21;
       transform:translateY(104%);
       transition:transform .3s cubic-bezier(.2,.8,.2,1);
-      padding:0 10px calc(var(--safe-bottom) + 10px);
+      padding:0 10px calc(env(safe-area-inset-bottom) + 10px);
       pointer-events:none;
     }
 
@@ -616,7 +612,7 @@
     .toast{
       position:fixed;
       left:50%;
-      bottom:calc(var(--safe-bottom) + 116px);
+      bottom:calc(env(safe-area-inset-bottom) + 116px);
       transform:translateX(-50%) translateY(10px);
       z-index:40;
       padding:10px 14px;
@@ -680,7 +676,7 @@
               </div>
             </div>
 
-            <div class="swipe-hint" id="swipeHint">
+            <div class="swipe-hint">
               <span class="swipe-arrow">←</span>
               <span>свайп по экрану</span>
               <span class="swipe-arrow">→</span>
@@ -795,11 +791,11 @@
 
     const localTrackCache = {};
 
-    const particles = Array.from({ length: 24 }, () => ({
+    const particles = Array.from({ length: 28 }, () => ({
       x: Math.random(),
       y: Math.random(),
-      r: Math.random() * 1.4 + 0.4,
-      a: Math.random() * .10 + .03,
+      r: Math.random() * 1.8 + 0.5,
+      a: Math.random() * .12 + .03,
       drift: Math.random() * .18 + .05
     }));
 
@@ -848,7 +844,6 @@
     async function registerSW(){
       if (!("serviceWorker" in navigator)) return;
       if (location.protocol === "file:") return;
-
       try{
         await navigator.serviceWorker.register("./sw.js");
       }catch(e){}
@@ -1318,8 +1313,8 @@
     function getEnergy(){
       const t = performance.now() * 0.001;
       const boost = !audio.paused && audio.src ? .14 : 0;
-      fakeEnergy += (((0.02 + Math.sin(t * 1.5) * 0.012) + boost) - fakeEnergy) * 0.05;
-      return Math.max(0.02, fakeEnergy);
+      fakeEnergy += (((0.025 + Math.sin(t * 1.5) * 0.012) + boost) - fakeEnergy) * 0.05;
+      return Math.max(0.025, fakeEnergy);
     }
 
     function updateQuietPulse(time){
@@ -1356,44 +1351,63 @@
       const t = time * 0.001;
       const w = innerWidth;
       const h = innerHeight;
+      const e = getEnergy();
 
       ctx.clearRect(0, 0, w, h);
 
-      const e = getEnergy();
-      bgPulse += ((0.12 + e * 0.7) - bgPulse) * 0.05;
+      bgPulse += ((0.18 + e * 0.9) - bgPulse) * 0.05;
 
-      let c1 = "120,205,255";
-      let c2 = "255,156,125";
+      let c1 = "110,200,255";
+      let c2 = "255,150,120";
+      let c3 = "180,230,255";
 
       if (currentGenre?.id === "rap"){
-        c1 = "210,210,210";
-        c2 = "120,120,120";
+        c1 = "220,220,220";
+        c2 = "140,140,140";
+        c3 = "255,255,255";
       } else if (currentGenre?.id === "jazz"){
-        c1 = "255,205,130";
-        c2 = "255,130,165";
+        c1 = "255,205,125";
+        c2 = "255,115,160";
+        c3 = "255,235,180";
       }
 
-      const topGlow = ctx.createRadialGradient(w * .5, h * .22, 0, w * .5, h * .22, Math.min(w, h) * .36);
-      topGlow.addColorStop(0, `rgba(${c1},${0.04 + bgPulse * 0.05})`);
-      topGlow.addColorStop(.45, `rgba(${c1},${0.015 + bgPulse * 0.02})`);
-      topGlow.addColorStop(1, `rgba(${c1},0)`);
-      ctx.fillStyle = topGlow;
+      const sphere1 = ctx.createRadialGradient(
+        w * 0.30, h * 0.30, 0,
+        w * 0.30, h * 0.30, Math.min(w, h) * 0.38
+      );
+      sphere1.addColorStop(0, `rgba(${c1},${0.12 + bgPulse * 0.16})`);
+      sphere1.addColorStop(0.35, `rgba(${c1},${0.05 + bgPulse * 0.07})`);
+      sphere1.addColorStop(1, `rgba(${c1},0)`);
+      ctx.fillStyle = sphere1;
       ctx.fillRect(0, 0, w, h);
 
-      const bottomGlow = ctx.createRadialGradient(w * .78, h * .74, 0, w * .78, h * .74, Math.min(w, h) * .40);
-      bottomGlow.addColorStop(0, `rgba(${c2},${0.04 + bgPulse * 0.06})`);
-      bottomGlow.addColorStop(.4, `rgba(${c2},${0.015 + bgPulse * 0.02})`);
-      bottomGlow.addColorStop(1, `rgba(${c2},0)`);
-      ctx.fillStyle = bottomGlow;
+      const sphere2 = ctx.createRadialGradient(
+        w * 0.77, h * 0.68, 0,
+        w * 0.77, h * 0.68, Math.min(w, h) * 0.42
+      );
+      sphere2.addColorStop(0, `rgba(${c2},${0.10 + bgPulse * 0.15})`);
+      sphere2.addColorStop(0.34, `rgba(${c2},${0.04 + bgPulse * 0.06})`);
+      sphere2.addColorStop(1, `rgba(${c2},0)`);
+      ctx.fillStyle = sphere2;
+      ctx.fillRect(0, 0, w, h);
+
+      const sphere3 = ctx.createRadialGradient(
+        w * 0.58, h * 0.52, 0,
+        w * 0.58, h * 0.52, Math.min(w, h) * 0.22
+      );
+      sphere3.addColorStop(0, `rgba(${c3},${0.07 + e * 0.12})`);
+      sphere3.addColorStop(0.4, `rgba(${c3},${0.02 + e * 0.05})`);
+      sphere3.addColorStop(1, `rgba(${c3},0)`);
+      ctx.fillStyle = sphere3;
       ctx.fillRect(0, 0, w, h);
 
       const lineY = h * .50;
-      const line = ctx.createLinearGradient(w * .24, lineY, w * .76, lineY);
+      const line = ctx.createLinearGradient(w * .20, lineY, w * .80, lineY);
       line.addColorStop(0, `rgba(${c1},0)`);
-      line.addColorStop(.5, `rgba(255,255,255,${0.05 + e * 0.08})`);
+      line.addColorStop(.5, `rgba(255,255,255,${0.05 + e * 0.09})`);
       line.addColorStop(1, `rgba(${c2},0)`);
       ctx.fillStyle = line;
-      ctx.fillRect(w * .24, lineY - .5, w * .52, 1);
+      ctx.fillRect(w * .20, lineY - .5, w * .60, 1);
 
       for (const p of particles){
         const x = p.x * w + Math.sin(t * p.drift + p.y * 8) * 8;
